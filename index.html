@@ -161,11 +161,11 @@ function genHistory(n, density, missDays = []) {
   return out;
 }
 const INITIAL_HABITS = [
-  { id:'pages', name:'Morning pages', identity:'a writer', cue:'After the kettle clicks', response:'Write three pages, longhand', reward:'A clearer head', minimum:'One sentence', time:'07:00', hue:HABIT_HUES.sage, accessory:'quill', streak:12, longest:18, history:genHistory(30,0.85,[5]), creatureName:'Sumi', done:false, withered:false, frequency:'daily' },
-  { id:'walk', name:'Walk after lunch', identity:'someone who moves gently', cue:'After I close my laptop at lunch', response:'Walk for 12 minutes', reward:'A second wind', minimum:'Around the block', time:'13:30', hue:HABIT_HUES.sky, accessory:'boots', streak:5, longest:9, history:genHistory(30,0.7,[11,14,20,21]), creatureName:'Aoi', done:false, withered:false, frequency:'daily' },
-  { id:'read', name:'Read 10 pages', identity:'a reader', cue:'After I get into bed', response:'Read ten pages', reward:'Soft sleep', minimum:'One paragraph', time:'22:30', hue:HABIT_HUES.rose, accessory:'specs', streak:26, longest:26, history:genHistory(30,0.95,[]), creatureName:'Kaze', done:true, withered:false, frequency:'daily' },
-  { id:'stretch', name:'Stretch', identity:'someone kind to my body', cue:'After I brush my teeth', response:'Five minutes of stretching', reward:'Less stiffness', minimum:'One stretch', time:'07:30', hue:HABIT_HUES.ochre, accessory:'leaf', streak:1, longest:7, history:genHistory(30,0.5,[25,26,27]), creatureName:'Hana', done:false, withered:false, frequency:'daily' },
-  { id:'sleep', name:'Lights out by 11', identity:'well-rested', cue:'When the clock turns 22:45', response:'Close everything and sleep', reward:'Mornings I want to wake into', minimum:'In bed by 11:30', time:'23:00', hue:HABIT_HUES.lavender, accessory:'cap', streak:0, longest:11, history:genHistory(30,0.4,[29,28,27,26,25,24,23,0,1,2]), creatureName:'Yume', done:false, withered:true, frequency:'weekly' },
+  { id:'pages', name:'Morning pages', identity:'a writer', cue:'After the kettle clicks', response:'Write three pages, longhand', reward:'A clearer head', minimum:'One sentence', time:'07:00', hue:HABIT_HUES.sage, accessory:'quill', theme:'pages', streak:12, longest:18, history:genHistory(30,0.85,[5]), creatureName:'Sumi', done:false, withered:false, frequency:'daily' },
+  { id:'walk', name:'Walk after lunch', identity:'someone who moves gently', cue:'After I close my laptop at lunch', response:'Walk for 12 minutes', reward:'A second wind', minimum:'Around the block', time:'13:30', hue:HABIT_HUES.sky, accessory:'boots', theme:'walk', streak:5, longest:9, history:genHistory(30,0.7,[11,14,20,21]), creatureName:'Aoi', done:false, withered:false, frequency:'daily' },
+  { id:'read', name:'Read 10 pages', identity:'a reader', cue:'After I get into bed', response:'Read ten pages', reward:'Soft sleep', minimum:'One paragraph', time:'22:30', hue:HABIT_HUES.rose, accessory:'specs', theme:'read', streak:26, longest:26, history:genHistory(30,0.95,[]), creatureName:'Kaze', done:true, withered:false, frequency:'daily' },
+  { id:'stretch', name:'Stretch', identity:'someone kind to my body', cue:'After I brush my teeth', response:'Five minutes of stretching', reward:'Less stiffness', minimum:'One stretch', time:'07:30', hue:HABIT_HUES.ochre, accessory:'leaf', theme:'stretch', streak:1, longest:7, history:genHistory(30,0.5,[25,26,27]), creatureName:'Hana', done:false, withered:false, frequency:'daily' },
+  { id:'sleep', name:'Lights out by 11', identity:'well-rested', cue:'When the clock turns 22:45', response:'Close everything and sleep', reward:'Mornings I want to wake into', minimum:'In bed by 11:30', time:'23:00', hue:HABIT_HUES.lavender, accessory:'cap', theme:'sleep', streak:0, longest:11, history:genHistory(30,0.4,[29,28,27,26,25,24,23,0,1,2]), creatureName:'Yume', done:false, withered:true, frequency:'weekly' },
 ];
 
 // ── Habit tips & book suggestions (curated by theme) ────────────
@@ -369,7 +369,116 @@ function Accessory({ kind, cx, cy, r, hue, withered }) {
   );
   return null;
 }
-function MochiBody({ stage, mood, size=80, hue, withered=false, accessory }) {
+// ── Per-theme ear / antenna shapes ──────────────────────────────
+function ThemeEars({ theme, cx, topY, r, hue, withered }) {
+  if (!theme || theme === 'ambient') return null;
+  const fade = withered ? 0.5 : 1;
+  const out = '#2E3A2A', base = '#F8F4E6';
+
+  if (theme === 'read') {
+    // Tall bunny ears
+    const ex=r*0.30, ey=topY-r*0.52, ew=r*0.13, eh=r*0.42;
+    return (
+      <g opacity={fade}>
+        <ellipse cx={cx-ex} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6"/>
+        <ellipse cx={cx-ex} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.38"/>
+        <ellipse cx={cx+ex} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6"/>
+        <ellipse cx={cx+ex} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.38"/>
+      </g>
+    );
+  }
+
+  if (theme === 'pages') {
+    // Cat ears — pointed triangles
+    const lx=cx-r*0.32, rx2=cx+r*0.32, ty=topY-r*0.38, by=topY+r*0.05, hw=r*0.24;
+    return (
+      <g opacity={fade}>
+        <path d={`M${lx-hw*0.4} ${by} L${lx} ${ty} L${lx+hw*0.6} ${by}Z`} fill={base} stroke={out} strokeWidth="0.5"/>
+        <path d={`M${lx-hw*0.18} ${by} L${lx} ${ty+r*0.13} L${lx+hw*0.38} ${by}Z`} fill={hue} opacity="0.30"/>
+        <path d={`M${rx2-hw*0.6} ${by} L${rx2} ${ty} L${rx2+hw*0.4} ${by}Z`} fill={base} stroke={out} strokeWidth="0.5"/>
+        <path d={`M${rx2-hw*0.38} ${by} L${rx2} ${ty+r*0.13} L${rx2+hw*0.18} ${by}Z`} fill={hue} opacity="0.30"/>
+      </g>
+    );
+  }
+
+  if (theme === 'walk') {
+    // Round bear ears
+    const ex=r*0.52, ey=topY, er=r*0.22;
+    return (
+      <g opacity={fade}>
+        <circle cx={cx-ex} cy={ey} r={er} fill={base} stroke={out} strokeWidth="0.6"/>
+        <circle cx={cx-ex} cy={ey} r={er*0.58} fill={hue} opacity="0.42"/>
+        <circle cx={cx+ex} cy={ey} r={er} fill={base} stroke={out} strokeWidth="0.6"/>
+        <circle cx={cx+ex} cy={ey} r={er*0.58} fill={hue} opacity="0.42"/>
+      </g>
+    );
+  }
+
+  if (theme === 'sleep') {
+    // Droopy floppy ears — elongated ovals angled outward
+    const ew=r*0.13, eh=r*0.44, lx=cx-r*0.58, rx2=cx+r*0.58, ey=topY+r*0.18;
+    return (
+      <g opacity={fade}>
+        <ellipse cx={lx} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6" transform={`rotate(-30 ${lx} ${ey})`}/>
+        <ellipse cx={lx} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.30" transform={`rotate(-30 ${lx} ${ey})`}/>
+        <ellipse cx={rx2} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6" transform={`rotate(30 ${rx2} ${ey})`}/>
+        <ellipse cx={rx2} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.30" transform={`rotate(30 ${rx2} ${ey})`}/>
+      </g>
+    );
+  }
+
+  if (theme === 'stretch') {
+    // Leaf antennae
+    const ax=r*0.20, ay=topY-r*0.40, sy=topY+r*0.02;
+    return (
+      <g opacity={fade}>
+        <line x1={cx-ax} y1={sy} x2={cx-ax*1.15} y2={ay} stroke="#5E7A4A" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d={`M${cx-ax*1.15} ${ay} Q${cx-ax*1.85} ${ay-r*0.26} ${cx-ax*0.95} ${ay-r*0.42} Q${cx-ax*0.45} ${ay-r*0.18} ${cx-ax*1.15} ${ay}Z`} fill="#7A9863" stroke="#5E7A4A" strokeWidth="0.5"/>
+        <line x1={cx+ax} y1={sy} x2={cx+ax*1.15} y2={ay} stroke="#5E7A4A" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d={`M${cx+ax*1.15} ${ay} Q${cx+ax*1.85} ${ay-r*0.26} ${cx+ax*0.95} ${ay-r*0.42} Q${cx+ax*0.45} ${ay-r*0.18} ${cx+ax*1.15} ${ay}Z`} fill="#7A9863" stroke="#5E7A4A" strokeWidth="0.5"/>
+      </g>
+    );
+  }
+
+  if (theme === 'tea') {
+    // Round top-knot nub — like a teapot lid knob
+    const nR=r*0.20;
+    return (
+      <g opacity={fade}>
+        <ellipse cx={cx} cy={topY-nR*0.42} rx={nR*1.35} ry={nR*0.82} fill={base} stroke={out} strokeWidth="0.6"/>
+        <ellipse cx={cx} cy={topY-nR*0.42} rx={nR*0.78} ry={nR*0.48} fill={hue} opacity="0.38"/>
+      </g>
+    );
+  }
+
+  if (theme === 'music') {
+    // Bubble antennae
+    return (
+      <g opacity={fade}>
+        <line x1={cx-r*0.18} y1={topY+r*0.04} x2={cx-r*0.24} y2={topY-r*0.46} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
+        <circle cx={cx-r*0.24} cy={topY-r*0.50} r={r*0.14} fill={hue} stroke={out} strokeWidth="0.5"/>
+        <line x1={cx+r*0.18} y1={topY+r*0.04} x2={cx+r*0.30} y2={topY-r*0.38} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
+        <circle cx={cx+r*0.30} cy={topY-r*0.42} r={r*0.14} fill={hue} stroke={out} strokeWidth="0.5"/>
+      </g>
+    );
+  }
+
+  if (theme === 'gratitude') {
+    // Heart antennae
+    const hx1=cx-r*0.17, hx2=cx+r*0.17, hy=topY-r*0.52, hs=r*0.14;
+    return (
+      <g opacity={fade}>
+        <line x1={hx1} y1={topY+r*0.02} x2={hx1} y2={hy+hs} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
+        <path d={`M${hx1} ${hy+hs} C${hx1} ${hy} ${hx1-hs} ${hy} ${hx1-hs} ${hy+hs*0.5} C${hx1-hs} ${hy+hs*1.4} ${hx1} ${hy+hs*1.7} ${hx1} ${hy+hs*1.7} C${hx1} ${hy+hs*1.7} ${hx1+hs} ${hy+hs*1.4} ${hx1+hs} ${hy+hs*0.5} C${hx1+hs} ${hy} ${hx1} ${hy} ${hx1} ${hy+hs}Z`} fill={hue} stroke={out} strokeWidth="0.4"/>
+        <line x1={hx2} y1={topY+r*0.02} x2={hx2} y2={hy+hs} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
+        <path d={`M${hx2} ${hy+hs} C${hx2} ${hy} ${hx2-hs} ${hy} ${hx2-hs} ${hy+hs*0.5} C${hx2-hs} ${hy+hs*1.4} ${hx2} ${hy+hs*1.7} ${hx2} ${hy+hs*1.7} C${hx2} ${hy+hs*1.7} ${hx2+hs} ${hy+hs*1.4} ${hx2+hs} ${hy+hs*0.5} C${hx2+hs} ${hy} ${hx2} ${hy} ${hx2} ${hy+hs}Z`} fill={hue} stroke={out} strokeWidth="0.4"/>
+      </g>
+    );
+  }
+
+  return null;
+}
+function MochiBody({ stage, mood, size=80, hue, withered=false, accessory, theme }) {
   const cfg = {
     seed:        {r:0.30,halo:0,    haloR:0,   faceSize:0.9,faceSpread:3,  mood:'sleep',feet:0.04},
     hatchling:   {r:0.36,halo:0.25, haloR:0.5, faceSize:1.2,faceSpread:4.5,mood,        feet:0.05},
@@ -407,6 +516,7 @@ function MochiBody({ stage, mood, size=80, hue, withered=false, accessory }) {
       <ellipse cx={cx} cy={botY+6} rx={r*0.75} ry={2.5} fill="#2E3A3A" opacity={withered?0.16:0.10}/>
       <g style={{transformOrigin:`${cx}px ${cy}px`,animation:withered?'bob-slow 6s ease-in-out infinite':'bob 4s ease-in-out infinite',opacity:withered?0.8:1}}>
         {cfg.feet>0&&<g opacity={withered?0.5:0.85}><rect x={cx-feetSpread-footW/2} y={botY-1} width={footW} height={footH} rx={footW/2} fill={shadowColor}/><rect x={cx+feetSpread-footW/2} y={botY-1} width={footW} height={footH} rx={footW/2} fill={shadowColor}/></g>}
+        <ThemeEars theme={theme} cx={cx} topY={topY} r={r} hue={accentColor} withered={withered}/>
         <path d={bodyPath} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.4"/>
         <ellipse cx={cx-r*0.34} cy={cy-r*0.4} rx={r*0.28} ry={r*0.2} fill="white" opacity="0.55"/>
         <circle cx={cx-r*0.5} cy={cy-r*0.55} r={r*0.07} fill="white" opacity="0.75"/>
@@ -419,9 +529,9 @@ function MochiBody({ stage, mood, size=80, hue, withered=false, accessory }) {
     </svg>
   );
 }
-function Mochi({ streak=0, size=80, hue, mood='happy', withered=false, fixedStage, accessory }) {
+function Mochi({ streak=0, size=80, hue, mood='happy', withered=false, fixedStage, accessory, theme }) {
   const stage = fixedStage || stageFromStreak(streak);
-  return <MochiBody stage={stage} mood={mood} size={size} hue={hue} withered={withered} accessory={accessory}/>;
+  return <MochiBody stage={stage} mood={mood} size={size} hue={hue} withered={withered} accessory={accessory} theme={theme}/>;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -448,7 +558,7 @@ function HabitScene({ habit, size=240 }) {
   return (
     <div style={{width:size,height:size*0.85,position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{animation:'bob 3.5s ease-in-out infinite'}}>
-        <Mochi streak={habit.streak} hue={habit.hue} size={size*0.62} accessory={accessory} withered={habit.withered}/>
+        <Mochi streak={habit.streak} hue={habit.hue} size={size*0.62} accessory={accessory} theme={habit.theme} withered={habit.withered}/>
       </div>
     </div>
   );
@@ -635,7 +745,7 @@ function TodayScreen({ habits, onOpenHabit, onComplete, onAdd, mood='day', greet
             return (
               <div key={h.id} style={{position:'absolute',left:positions.x,bottom:positions.bottom,transform:'translateX(-50%)',animation:`bob ${7+i*1.5}s ease-in-out infinite ${positions.delay}s`,zIndex:10}}>
                 <div style={{position:'relative',animation:'bob 1.6s ease-in-out infinite'}}>
-                  <Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} size={positions.size} withered={h.withered}/>
+                  <Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={positions.size} withered={h.withered}/>
                 </div>
               </div>
             );
@@ -680,7 +790,7 @@ function HabitCard({ habit, onOpen, onComplete }) {
   return (
     <div onClick={onOpen} style={{display:'flex',alignItems:'stretch',gap:0,background:habit.done?'linear-gradient(135deg,rgba(221,229,206,0.45),rgba(221,229,206,0.15))':'var(--card)',borderRadius:'var(--radius-card)',boxShadow:'var(--shadow-soft)',overflow:'hidden',cursor:'pointer',border:habit.done?'0.5px solid rgba(143,167,127,0.3)':'0.5px solid transparent'}}>
       <div style={{width:114,flexShrink:0,position:'relative',background:habit.done?`linear-gradient(135deg,${habit.hue}22,${habit.hue}08)`:`linear-gradient(135deg,${habit.hue}18,${habit.hue}06)`,display:'flex',alignItems:'center',justifyContent:'center'}}>
-        <Mochi streak={habit.streak} hue={habit.hue} accessory={habit.accessory} size={80} withered={habit.withered}/>
+        <Mochi streak={habit.streak} hue={habit.hue} accessory={habit.accessory} theme={habit.theme} size={80} withered={habit.withered}/>
         {habit.streak>0&&<div style={{position:'absolute',top:8,left:8,background:'rgba(255,255,255,0.85)',backdropFilter:'blur(8px)',padding:'2px 6px',borderRadius:8,fontSize:10,fontWeight:600,color:habit.hue,letterSpacing:-0.1,display:'flex',alignItems:'center',gap:3}}><span style={{color:habit.hue}}>{ICON.flame()}</span>{habit.streak}</div>}
       </div>
       <div style={{flex:1,padding:'14px 12px',minWidth:0}}>
@@ -769,7 +879,7 @@ function GardenScreen({ habits, onOpenHabit, mood='day' }) {
           <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:`linear-gradient(180deg,${grassA} 0%,${grassB} 100%)`,zIndex:5}}/>
           {habits.slice(0,5).map((h,i)=>{
             const positions=[{left:'14%',bottom:16,scale:0.65},{left:'32%',bottom:6,scale:0.85},{left:'54%',bottom:22,scale:0.55},{left:'72%',bottom:10,scale:0.75},{left:'88%',bottom:26,scale:0.5}][i];
-            return <div key={h.id} style={{position:'absolute',left:positions.left,bottom:positions.bottom,transform:`translateX(-50%) scale(${positions.scale})`,transformOrigin:'50% 100%',zIndex:Math.round(100-parseFloat(positions.left)),animation:`bob ${3+i*0.5}s ease-in-out infinite ${i*0.3}s`}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} size={72} withered={h.withered}/></div>;
+            return <div key={h.id} style={{position:'absolute',left:positions.left,bottom:positions.bottom,transform:`translateX(-50%) scale(${positions.scale})`,transformOrigin:'50% 100%',zIndex:Math.round(100-parseFloat(positions.left)),animation:`bob ${3+i*0.5}s ease-in-out infinite ${i*0.3}s`}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={72} withered={h.withered}/></div>;
           })}
           {isDark&&Array.from({length:10}).map((_,i)=><div key={i} style={{position:'absolute',left:`${10+(i*73)%80}%`,top:130+(i*17)%130,width:3,height:3,borderRadius:'50%',background:'#FFEDB4',boxShadow:'0 0 6px #FFEDB4,0 0 14px rgba(255,237,180,0.6)',animation:`shimmer ${1.5+(i%4)*0.4}s ease-in-out infinite ${i*0.2}s`,zIndex:8}}/>)}
         </div>
@@ -874,7 +984,7 @@ function InsightsScreen({ habits, userName='' }) {
           {habits.map((h,i)=>(
             <div key={h.id}>
               <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 16px'}}>
-                <div style={{width:40,height:40,borderRadius:12,flexShrink:0,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center'}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} size={36} withered={h.withered}/></div>
+                <div style={{width:40,height:40,borderRadius:12,flexShrink:0,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center'}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={36} withered={h.withered}/></div>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:14.5,fontWeight:500,color:'var(--ink)'}}>{h.creatureName}</div>
                   <div style={{fontSize:11,color:'var(--ink-3)',marginTop:1}}>{h.name}{h.frequency==='weekly'?' · weekly':''}</div>
@@ -1298,7 +1408,7 @@ function CheckInOverlay({ habit, onClose }) {
       <style>{`@keyframes rise{0%{transform:translateY(0);}100%{transform:translateY(-80px);}}@keyframes particle{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-200px) scale(0);opacity:0;}}`}</style>
       <div style={{position:'absolute',inset:0}}><Sky mood="day" height={520}/><div style={{position:'absolute',bottom:0,left:0,right:0}}><Sea height={140} vitality={0.9} mood="day"/></div></div>
       <div style={{position:'absolute',left:'50%',top:'32%',transform:'translateX(-50%)',animation:phase>=1?'rise 1.5s ease-out forwards':'bob 3s ease-in-out infinite',transition:'all 0.5s'}}>
-        <Mochi streak={newStreak} hue={habit.hue} accessory={habit.accessory} size={180}/>
+        <Mochi streak={newStreak} hue={habit.hue} accessory={habit.accessory} theme={habit.theme} size={180}/>
         {phase>=1&&Array.from({length:8}).map((_,i)=><div key={i} style={{position:'absolute',left:`${50+(i-4)*12}%`,top:'40%',width:4+(i%3),height:4+(i%3),borderRadius:'50%',background:['#F8F4E6','#FFFBE8',habit.hue][i%3],opacity:0.8,animation:`particle ${1.5+(i%3)*0.3}s ease-out forwards ${i*0.08}s`}}/>)}
       </div>
       <div style={{position:'absolute',left:22,right:22,bottom:120,textAlign:'center',opacity:phase>=2?1:0,transition:'opacity 0.6s'}}>
@@ -1507,8 +1617,11 @@ function App() {
     try {
       const s = localStorage.getItem('mochi_habits');
       if (!s) return INITIAL_HABITS;
-      // Migrate: add frequency:'daily' to any habit missing it
-      return JSON.parse(s).map(h => h.frequency ? h : {...h, frequency:'daily'});
+      // Migrate: add frequency and theme to any habit missing them
+      return JSON.parse(s).map(h => {
+        const h2 = h.frequency ? h : {...h, frequency:'daily'};
+        return h2.theme ? h2 : {...h2, theme: inferTheme(h2).theme};
+      });
     } catch { return INITIAL_HABITS; }
   });
   React.useEffect(()=>{ try{localStorage.setItem('mochi_habits',JSON.stringify(habits));}catch{} },[habits]);
