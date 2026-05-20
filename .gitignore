@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Xcode
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserstate
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# iOS CocoaPods (not used here but just in case)
+Pods/
+Podfile.lock
+
+# Cloudflare Worker secrets — never commit these
+.env
+.dev.vars

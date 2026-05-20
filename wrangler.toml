@@ -1,0 +1,8 @@
+name = "mochi-coach"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# After deploying, set your key with:
+#   wrangler secret put ANTHROPIC_API_KEY
+#
+# Then paste the worker URL into MOCHI_COACH_URL in index.html

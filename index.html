@@ -1,0 +1,1647 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#F7F2E5">
+<title>Mochi — a gentle habit coach</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+
+<style>
+/* ─── Tokens ─────────────────────────────────────────────── */
+:root {
+  --sky-50:#F2F6FA;--sky-100:#DCEAF1;--sky-200:#B8D4E3;--sky-300:#8FB8CC;--sky-400:#5E8AA8;--sky-500:#3D6B89;
+  --sage-50:#F0F3EA;--sage-100:#DDE5CE;--sage-200:#B7C9A8;--sage-300:#8FA77F;--sage-400:#6B855A;--sage-500:#4D6840;
+  --cream-50:#FBF8EF;--cream-100:#F7F2E5;--cream-200:#EFE7D0;--cream-300:#E2D5B0;
+  --rose-100:#F2DDD8;--rose-200:#E8C5C0;--rose-300:#D49C97;--rose-400:#B97772;
+  --ochre-200:#EAD2A2;--ochre-300:#D9B26B;--ochre-400:#B88B43;
+  --ink:#2E3A3A;--ink-2:#4A5959;--ink-3:#7A8989;--ink-4:#A8B3B1;
+  --mochi:#F8F4E6;--mochi-soft:#EFE9D6;--mochi-shadow:#D9D0B5;
+  --bg:var(--cream-100);--bg-soft:var(--cream-50);--card:#FFFFFF;--card-2:#FDFBF4;
+  --line:rgba(46,58,58,0.08);--line-strong:rgba(46,58,58,0.14);
+  --accent:var(--sage-300);--accent-soft:var(--sage-100);--accent-deep:var(--sage-400);
+  --radius-card:22px;--radius-pill:999px;--radius-tile:16px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-left:env(safe-area-inset-left,0px);
+  --safe-right:env(safe-area-inset-right,0px);
+  --shadow-card:0 1px 2px rgba(46,58,58,0.04),0 8px 24px rgba(46,58,58,0.06);
+  --shadow-soft:0 1px 2px rgba(46,58,58,0.03),0 4px 14px rgba(46,58,58,0.04);
+  --shadow-lift:0 2px 4px rgba(46,58,58,0.05),0 16px 40px rgba(46,58,58,0.12);
+  --font-display:"Newsreader",ui-serif,Georgia,serif;
+  --font-ui:-apple-system,"SF Pro Text","SF Pro",system-ui,sans-serif;
+  --font-num:"Newsreader",ui-serif,Georgia,serif;
+}
+[data-palette="twilight"] {
+  --sky-50:#1F2B3E;--sky-100:#2A3B54;--sky-200:#3D5275;--sky-300:#5C7AA0;--sky-400:#8AA3C2;--sky-500:#B6CADE;
+  --sage-100:#2E3A48;--sage-200:#4A5A6E;--sage-300:#7A8DA3;--sage-400:#ABB9CB;
+  --cream-50:#F4ECDB;--cream-100:#1A2438;--cream-200:#2D3A52;--cream-300:#475D7C;
+  --rose-100:#4A3548;--rose-200:#7A5D70;--rose-300:#B58CA0;--rose-400:#D7AEC0;
+  --ochre-200:#C8A45F;--ochre-300:#E0BE7C;--ochre-400:#F5D89A;
+  --ink:#F0EAD9;--ink-2:#C9C0AC;--ink-3:#8C9AAE;--ink-4:#5A6C84;
+  --bg:#131C2E;--bg-soft:#1A2438;--card:#1F2B3E;--card-2:#25334A;
+  --line:rgba(245,236,219,0.08);--line-strong:rgba(245,236,219,0.14);
+  --accent:var(--ochre-300);--accent-soft:var(--cream-200);--accent-deep:var(--ochre-400);
+  --shadow-card:0 1px 2px rgba(0,0,0,0.3),0 8px 24px rgba(0,0,0,0.35);
+  --shadow-soft:0 1px 2px rgba(0,0,0,0.2),0 4px 14px rgba(0,0,0,0.25);
+  --shadow-lift:0 2px 4px rgba(0,0,0,0.35),0 16px 40px rgba(0,0,0,0.5);
+}
+[data-palette="dawn"] {
+  --sky-50:#FBF6E8;--sky-100:#F5E8C9;--sky-200:#EBD79F;--sky-300:#D9B97A;--sky-400:#B8945A;
+  --sage-100:#DAE2C8;--sage-200:#B8C8A0;--sage-300:#8AA66D;--sage-400:#5E7E45;--sage-500:#3F5A2C;
+  --rose-100:#F4E0D2;--rose-200:#E8C2A4;--rose-300:#D49A75;--rose-400:#B77149;
+  --cream-50:#FCFAF1;--cream-100:#F8F3E2;--cream-200:#F0E6C8;
+  --bg:var(--cream-50);--accent:var(--sage-400);--accent-soft:var(--sage-100);--accent-deep:var(--sage-500);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;}
+body{
+  background:radial-gradient(circle at 20% 20%,#E8DFC8 0%,transparent 50%),
+             radial-gradient(circle at 80% 80%,#C9DCE3 0%,transparent 50%),#DDD3B8;
+  background-attachment:fixed;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  font-family:var(--font-ui);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  min-height:100dvh;
+}
+/* ─── Real device: fill the screen ──────────────────────────── */
+@media (max-width:500px) {
+  body{padding:0;background:#000;align-items:stretch;justify-content:stretch;}
+  #root{border-radius:0!important;box-shadow:none!important;width:100vw!important;height:100dvh!important;}
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle at 30% 20%,rgba(255,255,255,0.4),transparent 40%),
+                   radial-gradient(circle at 80% 70%,rgba(143,167,127,0.15),transparent 40%);
+  opacity:0.6;
+}
+#root{position:relative;z-index:1;box-shadow:0 30px 80px rgba(60,80,70,0.25),0 4px 8px rgba(0,0,0,0.06);border-radius:48px;}
+.scroll-hide::-webkit-scrollbar{display:none;}
+.scroll-hide{scrollbar-width:none;}
+.no-anim *,.no-anim *::before,.no-anim *::after{animation:none!important;transition:none!important;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-6px) rotate(1deg);}}
+@keyframes bob-slow{0%,100%{transform:translateY(0) rotate(-0.5deg);}50%{transform:translateY(-3px) rotate(0.8deg);}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1);}95%,98%{transform:scaleY(0.1);}}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+@keyframes ripple{0%{transform:scale(0.8);opacity:0.5;}100%{transform:scale(1.6);opacity:0;}}
+@keyframes drift{0%,100%{transform:translate(0,0);}33%{transform:translate(2px,-4px);}66%{transform:translate(-3px,-2px);}}
+@keyframes ascend{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-120px) scale(0.7);opacity:0;}}
+@keyframes shimmer{0%,100%{opacity:0.6;}50%{opacity:1;}}
+@keyframes cloud-drift{from{transform:translateX(-10%);}to{transform:translateX(110%);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+@keyframes slideLeft{from{transform:translateX(20%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes petalFall0{from{transform:translateY(-20px) rotate(0deg);}to{transform:translateY(220px) rotate(360deg);}}
+@keyframes petalFall1{from{transform:translateY(-20px) translateX(-10px) rotate(0deg);}to{transform:translateY(220px) translateX(15px) rotate(180deg);}}
+@keyframes petalFall2{from{transform:translateY(-20px) translateX(5px) rotate(45deg);}to{transform:translateY(220px) translateX(-20px) rotate(225deg);}}
+@keyframes typing{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* Tweaks panel CSS */
+.twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;background:rgba(250,249,247,.78);color:#29261b;-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border:.5px solid rgba(255,255,255,.6);border-radius:14px;box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+.twk-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 10px 14px;cursor:move;user-select:none}
+.twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+.twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+.twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+.twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;overflow-x:hidden;min-height:0;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+.twk-row{display:flex;flex-direction:column;gap:5px}
+.twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.twk-lbl{display:flex;justify-content:space-between;align-items:baseline;color:rgba(41,38,27,.72)}
+.twk-lbl>span:first-child{font-weight:500}
+.twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+.twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(41,38,27,.45);padding:10px 0 0}
+.twk-sect:first-child{padding-top:0}
+.twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+.twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+select.twk-field{padding-right:22px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");background-repeat:no-repeat;background-position:right 8px center}
+.twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+.twk-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+.twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;background:rgba(0,0,0,.06);user-select:none}
+.twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+.twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;overflow-wrap:anywhere}
+.twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+.twk-toggle[data-on="1"]{background:#34c759}
+.twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.twk-toggle[data-on="1"] i{transform:translateX(14px)}
+.twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+.twk-btn:hover{background:rgba(0,0,0,.88)}
+.twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+<script type="text/babel">
+// ═══════════════════════════════════════════════════════════════
+// CONFIG — paste your Cloudflare Worker URL after deploying
+// ═══════════════════════════════════════════════════════════════
+const MOCHI_COACH_URL = ''; // e.g. 'https://mochi-coach.YOUR_SUBDOMAIN.workers.dev'
+
+// ═══════════════════════════════════════════════════════════════
+// TOKENS / DATA
+// ═══════════════════════════════════════════════════════════════
+const HABIT_HUES = {
+  sage: '#8FA77F', sky: '#8FB8CC', rose: '#D49C97', ochre: '#D9B26B', lavender: '#B8A4C4',
+};
+function genHistory(n, density, missDays = []) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    if (missDays.includes(i)) { out.push(false); continue; }
+    out.push(((i * 73 + 11) % 100) / 100 < density);
+  }
+  return out;
+}
+const INITIAL_HABITS = [
+  { id:'pages', name:'Morning pages', identity:'a writer', cue:'After the kettle clicks', response:'Write three pages, longhand', reward:'A clearer head', minimum:'One sentence', time:'07:00', hue:HABIT_HUES.sage, accessory:'quill', streak:12, longest:18, history:genHistory(30,0.85,[5]), creatureName:'Sumi', done:false, withered:false, frequency:'daily' },
+  { id:'walk', name:'Walk after lunch', identity:'someone who moves gently', cue:'After I close my laptop at lunch', response:'Walk for 12 minutes', reward:'A second wind', minimum:'Around the block', time:'13:30', hue:HABIT_HUES.sky, accessory:'boots', streak:5, longest:9, history:genHistory(30,0.7,[11,14,20,21]), creatureName:'Aoi', done:false, withered:false, frequency:'daily' },
+  { id:'read', name:'Read 10 pages', identity:'a reader', cue:'After I get into bed', response:'Read ten pages', reward:'Soft sleep', minimum:'One paragraph', time:'22:30', hue:HABIT_HUES.rose, accessory:'specs', streak:26, longest:26, history:genHistory(30,0.95,[]), creatureName:'Kaze', done:true, withered:false, frequency:'daily' },
+  { id:'stretch', name:'Stretch', identity:'someone kind to my body', cue:'After I brush my teeth', response:'Five minutes of stretching', reward:'Less stiffness', minimum:'One stretch', time:'07:30', hue:HABIT_HUES.ochre, accessory:'leaf', streak:1, longest:7, history:genHistory(30,0.5,[25,26,27]), creatureName:'Hana', done:false, withered:false, frequency:'daily' },
+  { id:'sleep', name:'Lights out by 11', identity:'well-rested', cue:'When the clock turns 22:45', response:'Close everything and sleep', reward:'Mornings I want to wake into', minimum:'In bed by 11:30', time:'23:00', hue:HABIT_HUES.lavender, accessory:'cap', streak:0, longest:11, history:genHistory(30,0.4,[29,28,27,26,25,24,23,0,1,2]), creatureName:'Yume', done:false, withered:true, frequency:'weekly' },
+];
+
+// ── Habit tips & book suggestions (curated by theme) ────────────
+const HABIT_TIPS = {
+  read:      { book:'Atomic Habits', author:'James Clear',       tip:'Read during a consistent anchor — right after breakfast or just before sleep.' },
+  pages:     { book:'Bird by Bird', author:'Anne Lamott',        tip:'Write the shitty first draft. Showing up matters more than perfection.' },
+  walk:      { book:'In Praise of Walking', author:'Shane O\'Mara', tip:'Even 12 minutes shifts your nervous system into a calmer state.' },
+  sleep:     { book:'Why We Sleep', author:'Matthew Walker',     tip:'Regularity beats duration. A consistent bedtime trains your circadian clock.' },
+  stretch:   { book:'The Willpower Instinct', author:'K. McGonigal', tip:'Pair movement with something already in your day — brushing teeth is perfect.' },
+  tea:       { book:'The Miracle Morning', author:'Hal Elrod',   tip:'A ritual drink signals your brain: "this time is different, this time is mine."' },
+  music:     { book:'The Art of Practice', author:'Robert Duke', tip:'Short daily sessions beat long weekly ones. 15 minutes every day compounds fast.' },
+  gratitude: { book:'Thanks!', author:'Robert Emmons',           tip:'Three specific things, not generic ones. Be precise, not vague.' },
+  ambient:   { book:'Atomic Habits', author:'James Clear',       tip:'Every action is a vote for the kind of person you want to become.' },
+};
+
+// ── Japanese name stylisation ────────────────────────────────────
+const NAME_KANJI = ['彩','颯','澄','輝','空','夢','光','風','波','花','星','葉'];
+function getNameKanji(name) {
+  if (!name) return '';
+  const idx = name.split('').reduce((s,c)=>s+c.charCodeAt(0),0) % NAME_KANJI.length;
+  return NAME_KANJI[idx];
+}
+
+// ── Mock friends data (friend-only leaderboard) ──────────────────
+const MOCK_FRIENDS = [
+  { name:'Yuki',   streak:34, done:4, total:5, hue:HABIT_HUES.sky,      stage:'ascending' },
+  { name:'Ren',    streak:21, done:3, total:4, hue:HABIT_HUES.rose,     stage:'grown'     },
+  { name:'Hana',   streak:12, done:2, total:3, hue:HABIT_HUES.ochre,    stage:'toddler'   },
+  { name:'Sota',   streak: 8, done:1, total:3, hue:HABIT_HUES.lavender, stage:'hatchling' },
+];
+const COACH_MESSAGES = [
+  { who:'coach', text:'Good morning. The sea is calm today.' },
+  { who:'coach', text:"Sumi has been waiting at the dock — three pages, when you're ready." },
+  { who:'me', text:"I'm tired. Can it wait?" },
+  { who:'coach', text:"Of course. But Yume drifted last night — three days now. Shall we plant a smaller version? One paragraph instead of three pages." },
+  { who:'me', text:'Okay. One paragraph.' },
+  { who:'coach', text:'A grain of rice still feeds the bird. Begin when you can.' },
+];
+const COACH_SUGGESTIONS = ["How are my mochi doing?","I keep missing this habit","Help me make it smaller","Which habit needs care?"];
+
+// ── Smart template fallback (used when MOCHI_COACH_URL is not set) ──
+function templateReply(text, habits) {
+  const t = text.toLowerCase();
+  const drifting = habits.filter(h => h.withered);
+  const thriving = habits.filter(h => h.streak >= 7 && !h.withered);
+  const best = habits.length ? habits.reduce((a,b) => a.streak > b.streak ? a : b) : null;
+  const newest = habits.length ? [...habits].sort((a,b) => a.streak - b.streak)[0] : null;
+
+  // Detect intent and pick a contextual response
+  if (t.includes('how are') || t.includes('doing') || t.includes('mochi')) {
+    if (!habits.length) return 'The garden is quiet and waiting. Plant your first habit, and a small soul will begin to stir.';
+    if (drifting.length && thriving.length)
+      return `${thriving[0].creatureName} is steady at ${thriving[0].streak} days — a quiet glow. ${drifting[0].creatureName} has drifted, but still breathes. One small act tonight would be enough.`;
+    if (drifting.length)
+      return `${drifting[0].creatureName} has been quiet. Even the smallest version of "${drifting[0].minimum.toLowerCase()}" would bring warmth back.`;
+    if (best)
+      return `${best.creatureName} is glowing at ${best.streak} days. The others are moving gently. The sea feels calm.`;
+  }
+
+  if (t.includes('miss') || t.includes('skip') || t.includes('fail') || t.includes('broke')) {
+    if (drifting.length)
+      return `${drifting[0].creatureName} understands. A missed day is not a lost cause — it is a tide that will return. Try just "${drifting[0].minimum.toLowerCase()}" tonight.`;
+    return 'Missing a day is how the habit learns your life. Begin again tomorrow, smaller if needed. The streak is not the point — the return is.';
+  }
+
+  if (t.includes('smaller') || t.includes('easier') || t.includes('hard') || t.includes('difficult')) {
+    const h = drifting[0] || newest;
+    if (h) return `For ${h.creatureName}, the smallest door is: "${h.minimum.toLowerCase()}". Walk through just that. Everything else is extra.`;
+    return 'Find the version so small it feels almost silly. That is the one to do on hard days. It keeps the thread unbroken.';
+  }
+
+  if (t.includes('which') || t.includes('care') || t.includes('focus') || t.includes('attention')) {
+    if (drifting.length)
+      return `${drifting[0].creatureName} needs the most tending right now — ${drifting[0].streak === 0 ? 'the streak has rested' : `${drifting[0].streak} days quiet`}. One small step would be enough.`;
+    if (newest && newest.streak < 3)
+      return `${newest.creatureName} is still young — ${newest.streak} days. The first three are the most tender. Hold it gently.`;
+    return 'All your mochi are moving quietly. Rest tonight, and return tomorrow with one small act.';
+  }
+
+  if (t.includes('stuck') || t.includes('motivat') || t.includes('start')) {
+    if (best) return `${best.creatureName} has shown you ${best.streak} days of proof. You already know how. Begin with just one breath of it.`;
+    return 'Beginning is the only hard part. Place just one step — the smallest one. The rest will follow in its own time.';
+  }
+
+  if (t.includes('good') || t.includes('great') || t.includes('doing well') || t.includes('proud')) {
+    if (best) return `${best.streak} days with ${best.creatureName}. That is real. The sea remembers every morning you showed up.`;
+    return 'Each kept day adds a stone to a quiet wall. You may not see it yet, but it is rising.';
+  }
+
+  // Default gentle response referencing their actual data
+  if (best && best.streak > 0)
+    return `${best.creatureName} is still here, ${best.streak} days strong. What would you like to tend today?`;
+  return 'I am here for your habits — your streaks, your drifting mochi, the small hard days. What would you like to tend?';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HOOKS
+// ═══════════════════════════════════════════════════════════════
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null ? keyOrEdits : { [keyOrEdits]: val };
+    setValues(prev => ({ ...prev, ...edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOCHI RENDERER
+// ═══════════════════════════════════════════════════════════════
+const STAGES = ['seed','hatchling','toddler','grown','ascending','transformed'];
+function stageFromStreak(streak) {
+  if (streak < 3)  return 'seed';
+  if (streak < 7)  return 'hatchling';
+  if (streak < 14) return 'toddler';
+  if (streak < 30) return 'grown';
+  if (streak < 90) return 'ascending';
+  return 'transformed'; // 90-day graduation — mochi becomes something new
+}
+function mixColors(c1, c2, weight) {
+  const p = (s,n) => parseInt(s.slice(n,n+2),16);
+  const w = Math.max(0, Math.min(1, weight));
+  const r = Math.round(p(c1,1)*(1-w)+p(c2,1)*w);
+  const g = Math.round(p(c1,3)*(1-w)+p(c2,3)*w);
+  const b = Math.round(p(c1,5)*(1-w)+p(c2,5)*w);
+  return `#${[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}`;
+}
+function FaceDots({ cx, cy, mood='happy', spread=6, size=1.6, color='#1F2828' }) {
+  if (mood === 'sleep') return (
+    <g stroke={color} strokeWidth={1.0} strokeLinecap="round" fill="none">
+      <path d={`M${cx-spread-1.4} ${cy} q1.4 -1.1 2.8 0`}/>
+      <path d={`M${cx+spread-1.4} ${cy} q1.4 -1.1 2.8 0`}/>
+    </g>
+  );
+  if (mood === 'sad') return (
+    <g fill={color}>
+      <circle cx={cx-spread} cy={cy+0.3} r={size*0.85}/>
+      <circle cx={cx+spread} cy={cy+0.3} r={size*0.85}/>
+      <path d={`M${cx-2.5} ${cy+4} q2.5 -1.6 5 0`} stroke={color} strokeWidth={0.9} fill="none" strokeLinecap="round"/>
+    </g>
+  );
+  const eyeW=size*1.05, eyeH=size*1.4;
+  return (
+    <g>
+      <g fill={color}>
+        <ellipse cx={cx-spread} cy={cy} rx={eyeW} ry={eyeH} style={{transformOrigin:`${cx-spread}px ${cy}px`,animation:'blink 6s ease-in-out infinite'}}/>
+        <ellipse cx={cx+spread} cy={cy} rx={eyeW} ry={eyeH} style={{transformOrigin:`${cx+spread}px ${cy}px`,animation:'blink 6s ease-in-out infinite 0.1s'}}/>
+      </g>
+      <circle cx={cx-spread-eyeW*0.25} cy={cy-eyeH*0.35} r={eyeW*0.35} fill="white"/>
+      <circle cx={cx+spread-eyeW*0.25} cy={cy-eyeH*0.35} r={eyeW*0.35} fill="white"/>
+      {mood==='happy' && <path d={`M${cx-2.2} ${cy+3.6} q2.2 1.8 4.4 0`} stroke={color} strokeWidth={0.9} fill="none" strokeLinecap="round"/>}
+    </g>
+  );
+}
+function Accessory({ kind, cx, cy, r, hue, withered }) {
+  if (!kind) return null;
+  const fade = withered ? 0.3 : 1;
+  const topY=cy-r*1.05, eyeY=cy+r*0.05, botY=cy+r*0.95, stroke='#2E2A1F';
+  if (kind==='quill') return (
+    <g opacity={fade} style={{animation:'bob 4s ease-in-out infinite'}}>
+      <line x1={cx+r*0.55} y1={topY+r*0.2} x2={cx+r*1.0} y2={topY-r*0.95} stroke={stroke} strokeWidth="1.2" strokeLinecap="round"/>
+      <path d={`M ${cx+r*1.0} ${topY-r*0.95} Q ${cx+r*1.3} ${topY-r*0.7}, ${cx+r*0.95} ${topY-r*0.45} Q ${cx+r*1.2} ${topY-r*0.2}, ${cx+r*0.85} ${topY-r*0.05}`} fill={hue} stroke={stroke} strokeWidth="0.5" opacity="0.9"/>
+    </g>
+  );
+  if (kind==='specs') { const sR=r*0.18; return (
+    <g fill="none" stroke={stroke} strokeWidth="1.0" opacity={fade*0.85}>
+      <circle cx={cx-r*0.32} cy={eyeY} r={sR} fill="rgba(255,255,255,0.3)"/>
+      <circle cx={cx+r*0.32} cy={eyeY} r={sR} fill="rgba(255,255,255,0.3)"/>
+      <line x1={cx-r*0.14} y1={eyeY} x2={cx+r*0.14} y2={eyeY}/>
+      <line x1={cx-r*0.5} y1={eyeY-sR*0.3} x2={cx-r*0.78} y2={eyeY-sR*0.4}/>
+      <line x1={cx+r*0.5} y1={eyeY-sR*0.3} x2={cx+r*0.78} y2={eyeY-sR*0.4}/>
+    </g>
+  ); }
+  if (kind==='leaf') return (
+    <g opacity={fade} style={{animation:'bob 4s ease-in-out infinite 0.3s'}}>
+      <line x1={cx} y1={topY+r*0.05} x2={cx} y2={topY-r*0.4} stroke="#5E7A4A" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d={`M ${cx} ${topY-r*0.4} Q ${cx+r*0.35} ${topY-r*0.55}, ${cx+r*0.15} ${topY-r*0.85} Q ${cx} ${topY-r*0.65}, ${cx} ${topY-r*0.4} Z`} fill="#7A9863" stroke="#5E7A4A" strokeWidth="0.5"/>
+      <path d={`M ${cx} ${topY-r*0.4} Q ${cx-r*0.25} ${topY-r*0.45}, ${cx-r*0.1} ${topY-r*0.7} Q ${cx} ${topY-r*0.55}, ${cx} ${topY-r*0.4} Z`} fill="#8FA77F" stroke="#5E7A4A" strokeWidth="0.5"/>
+    </g>
+  );
+  if (kind==='cap') return (
+    <g opacity={fade}>
+      {/* cone body */}
+      <path d={`M ${cx-r*0.72} ${topY+r*0.22} Q ${cx+r*0.04} ${topY-r*0.42} ${cx+r*0.28} ${topY-r*0.8} Q ${cx+r*0.55} ${topY-r*0.28} ${cx+r*0.7} ${topY+r*0.22} Q ${cx} ${topY+r*0.38} ${cx-r*0.72} ${topY+r*0.22} Z`} fill={hue} stroke={stroke} strokeWidth="0.5" opacity="0.92"/>
+      {/* brim fold highlight */}
+      <path d={`M ${cx-r*0.72} ${topY+r*0.22} Q ${cx} ${topY+r*0.07} ${cx+r*0.7} ${topY+r*0.22}`} stroke="white" strokeWidth="0.7" fill="none" strokeOpacity="0.32" strokeLinecap="round"/>
+      {/* pompom */}
+      <circle cx={cx+r*0.28} cy={topY-r*0.86} r={r*0.15} fill="#F8F4E6" stroke={stroke} strokeWidth="0.35" opacity="0.95"/>
+    </g>
+  );
+  if (kind==='boots') return (
+    <g opacity={fade}>
+      <ellipse cx={cx-r*0.28} cy={botY+r*0.25} rx={r*0.22} ry={r*0.12} fill={hue} stroke={stroke} strokeWidth="0.5"/>
+      <ellipse cx={cx+r*0.28} cy={botY+r*0.25} rx={r*0.22} ry={r*0.12} fill={hue} stroke={stroke} strokeWidth="0.5"/>
+    </g>
+  );
+  if (kind==='star') return (
+    <g opacity={fade} style={{transformOrigin:`${cx}px ${topY-r*0.4}px`,animation:'breathe 3s ease-in-out infinite'}}>
+      <path d={`M ${cx} ${topY-r*0.7} L ${cx+r*0.06} ${topY-r*0.5} L ${cx+r*0.25} ${topY-r*0.48} L ${cx+r*0.09} ${topY-r*0.34} L ${cx+r*0.14} ${topY-r*0.14} L ${cx} ${topY-r*0.26} L ${cx-r*0.14} ${topY-r*0.14} L ${cx-r*0.09} ${topY-r*0.34} L ${cx-r*0.25} ${topY-r*0.48} L ${cx-r*0.06} ${topY-r*0.5} Z`} fill={hue} stroke={stroke} strokeWidth="0.4"/>
+    </g>
+  );
+  return null;
+}
+function MochiBody({ stage, mood, size=80, hue, withered=false, accessory }) {
+  const cfg = {
+    seed:        {r:0.30,halo:0,    haloR:0,   faceSize:0.9,faceSpread:3,  mood:'sleep',feet:0.04},
+    hatchling:   {r:0.36,halo:0.25, haloR:0.5, faceSize:1.2,faceSpread:4.5,mood,        feet:0.05},
+    toddler:     {r:0.40,halo:0.4,  haloR:0.6, faceSize:1.4,faceSpread:5.5,mood,        feet:0.06},
+    grown:       {r:0.44,halo:0.65, haloR:0.78,faceSize:1.6,faceSpread:6.5,mood,        feet:0.06},
+    ascending:   {r:0.42,halo:0.85, haloR:0.9, faceSize:1.5,faceSpread:6,  mood,        feet:0.05},
+    transformed: {r:0.46,halo:1.0,  haloR:1.1, faceSize:1.7,faceSpread:6.5,mood:'happy',feet:0.04},
+  }[stage]||{r:0.36,halo:0,haloR:0,faceSize:1.2,faceSpread:4.5,mood:'happy',feet:0.05};
+  const VB=100, cx=50, cy=VB*0.52, r=VB*cfg.r, haloR=VB*cfg.haloR;
+  const topY=cy-r*1.05, botY=cy+r*0.95, widestY=cy+r*0.1, faceY=cy+r*0.05;
+  const feetSpread=r*0.32, footW=r*cfg.feet*4, footH=r*cfg.feet*6;
+  const gradId=`wg-${stage}-${Math.round(size)}-${withered?'w':'n'}-${(hue||'').slice(1)||'x'}`;
+  const baseColor=withered?'#D9D0B5':'#F8F4E6';
+  const shadowColor=withered?'#A89E80':'#C9BE9E';
+  const accentColor=hue||(withered?'#9FAB9F':'#FFE8A8');
+  const tintedShadow=hue&&!withered?mixColors(shadowColor,hue,0.25):shadowColor;
+  const w=r*0.92, fullW=r;
+  const bodyPath=[`M ${cx} ${topY}`,`C ${cx+w*0.7} ${topY+r*0.05}, ${cx+fullW} ${cy-r*0.2}, ${cx+fullW} ${widestY}`,`C ${cx+fullW} ${botY-r*0.1}, ${cx+fullW*0.6} ${botY+1}, ${cx} ${botY+1}`,`C ${cx-fullW*0.6} ${botY+1}, ${cx-fullW} ${botY-r*0.1}, ${cx-fullW} ${widestY}`,`C ${cx-fullW} ${cy-r*0.2}, ${cx-w*0.7} ${topY+r*0.05}, ${cx} ${topY}`,`Z`].join(' ');
+  return (
+    <svg viewBox={`0 0 ${VB} ${VB}`} width={size} height={size} style={{overflow:'visible'}}>
+      <defs>
+        <radialGradient id={gradId} cx="40%" cy="32%" r="68%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1"/>
+          <stop offset="38%" stopColor={baseColor} stopOpacity={withered?0.85:0.98}/>
+          <stop offset="82%" stopColor={baseColor} stopOpacity={withered?0.78:0.96}/>
+          <stop offset="100%" stopColor={tintedShadow} stopOpacity="0.92"/>
+        </radialGradient>
+        <radialGradient id={gradId+'-halo'} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={accentColor} stopOpacity={cfg.halo*0.7}/>
+          <stop offset="45%" stopColor={accentColor} stopOpacity={cfg.halo*0.25}/>
+          <stop offset="100%" stopColor={accentColor} stopOpacity="0"/>
+        </radialGradient>
+      </defs>
+      {cfg.halo>0&&!withered&&<circle cx={cx} cy={cy} r={haloR} fill={`url(#${gradId}-halo)`} style={{animation:'breathe 4s ease-in-out infinite'}}/>}
+      <ellipse cx={cx} cy={botY+6} rx={r*0.75} ry={2.5} fill="#2E3A3A" opacity={withered?0.16:0.10}/>
+      <g style={{transformOrigin:`${cx}px ${cy}px`,animation:withered?'bob-slow 6s ease-in-out infinite':'bob 4s ease-in-out infinite',opacity:withered?0.8:1}}>
+        {cfg.feet>0&&<g opacity={withered?0.5:0.85}><rect x={cx-feetSpread-footW/2} y={botY-1} width={footW} height={footH} rx={footW/2} fill={shadowColor}/><rect x={cx+feetSpread-footW/2} y={botY-1} width={footW} height={footH} rx={footW/2} fill={shadowColor}/></g>}
+        <path d={bodyPath} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.4"/>
+        <ellipse cx={cx-r*0.34} cy={cy-r*0.4} rx={r*0.28} ry={r*0.2} fill="white" opacity="0.55"/>
+        <circle cx={cx-r*0.5} cy={cy-r*0.55} r={r*0.07} fill="white" opacity="0.75"/>
+        {!withered&&stage!=='seed'&&<g opacity="0.5"><ellipse cx={cx-cfg.faceSpread-1.6} cy={faceY+2.6} rx={2} ry={1.1} fill="#F0B8B8"/><ellipse cx={cx+cfg.faceSpread+1.6} cy={faceY+2.6} rx={2} ry={1.1} fill="#F0B8B8"/></g>}
+        <FaceDots cx={cx} cy={faceY} mood={withered?'sad':(stage==='seed'?'sleep':cfg.mood)} spread={cfg.faceSpread} size={cfg.faceSize}/>
+        <Accessory kind={accessory} cx={cx} cy={cy} r={r} hue={hue||'#8FA77F'} withered={withered}/>
+        {stage!=='seed'&&(()=>{const armW=r*0.13,armH=r*0.30,armY=cy+r*0.35,armX=r*0.85,angle=withered?-8:10;return(<><ellipse cx={cx-armX} cy={armY} rx={armW} ry={armH} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.45" transform={`rotate(${-angle} ${cx-armX} ${armY})`}/><ellipse cx={cx+armX} cy={armY} rx={armW} ry={armH} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.45" transform={`rotate(${angle} ${cx+armX} ${armY})`}/></>);})()} 
+      </g>
+      {!withered&&cfg.halo>0.3&&<><circle cx={cx+r*1.0} cy={cy-r*0.8} r="0.8" fill="white" style={{animation:'shimmer 2.5s ease-in-out infinite'}}/><circle cx={cx-r*1.1} cy={cy-r*0.5} r="0.6" fill="white" style={{animation:'shimmer 3s ease-in-out infinite 0.7s'}}/></>}
+    </svg>
+  );
+}
+function Mochi({ streak=0, size=80, hue, mood='happy', withered=false, fixedStage, accessory }) {
+  const stage = fixedStage || stageFromStreak(streak);
+  return <MochiBody stage={stage} mood={mood} size={size} hue={hue} withered={withered} accessory={accessory}/>;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SCENES / INFERENCE
+// ═══════════════════════════════════════════════════════════════
+const SCENE_HINTS = [
+  {keys:['read','book','pages','study','learn'],theme:'read',accessory:'specs'},
+  {keys:['write','journal','draw','note','morning page'],theme:'pages',accessory:'quill'},
+  {keys:['walk','run','jog','step','move','hike'],theme:'walk',accessory:'boots'},
+  {keys:['sleep','bed','rest','wake','lights out','nap'],theme:'sleep',accessory:'cap'},
+  {keys:['stretch','yoga','meditat','breath','mobility'],theme:'stretch',accessory:'leaf'},
+  {keys:['tea','coffee','water','drink','hydrate'],theme:'tea',accessory:'cup'},
+  {keys:['music','sing','play','practice'],theme:'music',accessory:'note'},
+  {keys:['gratit','pray','thank','reflect'],theme:'gratitude',accessory:'star'},
+];
+function inferTheme(habit) {
+  const text=((habit.name||'')+' '+(habit.identity||'')+' '+(habit.response||'')).toLowerCase();
+  for (const hint of SCENE_HINTS) if (hint.keys.some(k=>text.includes(k))) return {theme:hint.theme,accessory:hint.accessory};
+  return {theme:'ambient',accessory:'leaf'};
+}
+const THEME_ACCESSORY = {read:'specs',pages:'quill',walk:'boots',sleep:'cap',stretch:'leaf',tea:'cup',music:'note',gratitude:'star',ambient:'leaf'};
+function HabitScene({ habit, size=240 }) {
+  const accessory = habit.accessory || inferTheme(habit).accessory || 'leaf';
+  return (
+    <div style={{width:size,height:size*0.85,position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div style={{animation:'bob 3.5s ease-in-out infinite'}}>
+        <Mochi streak={habit.streak} hue={habit.hue} size={size*0.62} accessory={accessory} withered={habit.withered}/>
+      </div>
+    </div>
+  );
+}
+function HabitSceneMini({ habit, size=120 }) { return <HabitScene habit={habit} size={size}/>; }
+
+// ═══════════════════════════════════════════════════════════════
+// SCENERY (Sky, Sea, Hills, Cloud, Island)
+// ═══════════════════════════════════════════════════════════════
+function Cloud({ x=0, y=0, w=100, opacity=0.6, tint='#FFFFFF' }) {
+  const h=w*0.45, id=`cl${Math.abs(x)}${Math.abs(y)}${w}`;
+  return (
+    <svg viewBox="0 0 100 50" style={{position:'absolute',left:x,top:y,width:w,height:h,animation:'cloud-drift 60s linear infinite',opacity}}>
+      <defs><radialGradient id={id} cx="50%" cy="40%"><stop offset="0%" stopColor={tint} stopOpacity="0.95"/><stop offset="70%" stopColor={tint} stopOpacity="0.5"/><stop offset="100%" stopColor={tint} stopOpacity="0"/></radialGradient></defs>
+      <ellipse cx="30" cy="28" rx="22" ry="14" fill={`url(#${id})`}/>
+      <ellipse cx="55" cy="22" rx="26" ry="16" fill={`url(#${id})`}/>
+      <ellipse cx="75" cy="30" rx="20" ry="12" fill={`url(#${id})`}/>
+    </svg>
+  );
+}
+function Hills({ mood='day' }) {
+  const colors={day:['#8FA77F','#6B855A'],dawn:['#A89A8C','#7E6F62'],dusk:['#5C5470','#3E3850'],night:['#2A3B54','#1A2438']};
+  const [c1,c2]=colors[mood]||colors.day;
+  return (
+    <svg viewBox="0 0 400 80" preserveAspectRatio="none" style={{width:'100%',height:80,display:'block',marginBottom:-1}}>
+      <path d="M0 50 Q 60 30 120 40 T 240 35 T 360 45 T 400 40 L 400 80 L 0 80 Z" fill={c1} opacity="0.7"/>
+      <path d="M0 60 Q 80 45 160 55 T 320 50 T 400 55 L 400 80 L 0 80 Z" fill={c2} opacity="0.85"/>
+    </svg>
+  );
+}
+function Sky({ mood='day', height=220, children, style={} }) {
+  const skies={dawn:['#F8E6D6','#F5D2B8','#E8B89C','#C99A8A'],day:['#DCEAF1','#B8D4E3','#8FB8CC','#6E9EBA'],dusk:['#E8C5C0','#C99FB0','#8C7A9E','#4E5C7E'],night:['#1F2B3E','#2A3B54','#3D5275','#5C7AA0']};
+  const colors=skies[mood]||skies.day;
+  return (
+    <div style={{position:'relative',height,width:'100%',overflow:'hidden',background:`linear-gradient(180deg,${colors[0]} 0%,${colors[1]} 40%,${colors[2]} 75%,${colors[3]} 100%)`,...style}}>
+      {mood==='night'?(<><div style={{position:'absolute',top:30,right:36,width:52,height:52,borderRadius:'50%',background:'radial-gradient(circle at 35% 35%, #F4ECDB, #D9C9A0)',boxShadow:'0 0 40px rgba(244,236,219,0.5)'}}/>{[[24,40],[60,28],[88,60],[140,30],[180,50],[220,38],[280,70],[320,46]].map(([x,y],i)=><div key={i} style={{position:'absolute',left:x,top:y,width:2,height:2,borderRadius:'50%',background:'#F4ECDB',animation:`shimmer ${2+i*0.3}s ease-in-out infinite`}}/>)}</>
+      ):(mood==='dawn'||mood==='dusk')?<div style={{position:'absolute',top:mood==='dawn'?60:70,right:28,width:64,height:64,borderRadius:'50%',background:mood==='dawn'?'radial-gradient(circle at 40% 40%, #FFE8C2, #F4B07A)':'radial-gradient(circle at 40% 40%, #F4C8A0, #C9756A)',opacity:0.85,boxShadow:mood==='dawn'?'0 0 60px rgba(244,176,122,0.5)':'0 0 60px rgba(201,117,106,0.4)'}}/>
+      :<div style={{position:'absolute',top:30,right:32,width:56,height:56,borderRadius:'50%',background:'radial-gradient(circle at 35% 35%, #FFFBE8, #F4D89A)',opacity:0.9,boxShadow:'0 0 50px rgba(244,216,154,0.5)'}}/>}
+      {(mood==='day'||mood==='dawn')&&<><Cloud x={-20} y={70} w={120} opacity={0.7}/><Cloud x={210} y={50} w={80} opacity={0.5}/><Cloud x={140} y={110} w={60} opacity={0.4}/></>}
+      {mood==='dusk'&&<><Cloud x={-20} y={70} w={140} opacity={0.55} tint="#E8C5C0"/><Cloud x={220} y={100} w={90} opacity={0.45} tint="#C99FB0"/></>}
+      {children}
+    </div>
+  );
+}
+function Sea({ height=100, vitality=0.7, mood='day' }) {
+  const seaColors={day:['#B8D4E3','#8FB8CC','#5E8AA8'],dawn:['#D8C2BB','#B89C9A','#8C7A7A'],dusk:['#8C7A9E','#5C5A7E','#34385E'],night:['#3D5275','#2A3B54','#1A2438']};
+  const [c1,c2,c3]=seaColors[mood]||seaColors.day;
+  return (
+    <div style={{position:'relative',height,width:'100%',overflow:'hidden',background:`linear-gradient(180deg,${c1} 0%,${c2} 60%,${c3} 100%)`}}>
+      <svg viewBox="0 0 400 100" preserveAspectRatio="none" style={{position:'absolute',top:0,left:0,width:'100%',height:'100%'}}>
+        <defs><linearGradient id="wavefoam" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="white" stopOpacity="0.4"/><stop offset="100%" stopColor="white" stopOpacity="0"/></linearGradient></defs>
+        <path d="M0 8 Q 50 2, 100 8 T 200 8 T 300 8 T 400 8 V 0 H 0 Z" fill="url(#wavefoam)"/>
+        <path d="M0 24 Q 50 18, 100 24 T 200 24 T 300 24 T 400 24" stroke="white" strokeOpacity="0.25" fill="none" strokeWidth="1"/>
+        <path d="M0 48 Q 80 42, 160 48 T 320 48 T 480 48" stroke="white" strokeOpacity="0.18" fill="none" strokeWidth="0.8"/>
+      </svg>
+      {Array.from({length:Math.round(vitality*8)}).map((_,i)=><div key={i} style={{position:'absolute',left:`${10+(i*47)%80}%`,top:`${20+(i*31)%60}%`,width:3,height:3,borderRadius:'50%',background:'white',opacity:0.6,animation:`shimmer ${2+(i%3)}s ease-in-out infinite ${i*0.3}s`}}/>)}
+    </div>
+  );
+}
+function IslandWithTent({ mood='day' }) {
+  const isDark=mood==='night';
+  const sandLight=isDark?'#8C7E5E':'#E8D2A6', sandDark=isDark?'#6B5E48':'#C9B485';
+  const grass=isDark?'#4A6048':'#7B9C5E', grassLight=isDark?'#5C7A58':'#A6C081';
+  const tent=isDark?'#B5746A':'#D49880', tentDark=isDark?'#7E4842':'#9E6358', tentFlap=isDark?'#5C2D2D':'#7A3128';
+  return (
+    <svg width="160" height="120" viewBox="0 0 160 120" style={{overflow:'visible'}}>
+      <ellipse cx="80" cy="112" rx="74" ry="8" fill="rgba(248,244,230,0.4)"/>
+      <path d="M 16 102 Q 30 80, 70 76 Q 110 74, 140 86 Q 148 96, 144 108 L 16 108 Z" fill={sandDark}/>
+      <path d="M 18 100 Q 32 82, 70 78 Q 108 76, 138 88 Q 144 96, 140 102 L 18 104 Z" fill={sandLight}/>
+      <path d="M 40 76 Q 50 62, 60 74 Q 70 62, 80 74 Q 90 62, 100 74 Q 108 64, 116 76 Z" fill={grass}/>
+      <path d="M 46 74 Q 54 64, 62 74 Q 70 66, 78 74 Q 86 64, 94 74 Q 102 68, 108 74 Z" fill={grassLight} opacity="0.85"/>
+      <path d="M 78 32 L 102 70 L 78 70 Z" fill={tentDark}/>
+      <path d="M 78 32 L 54 70 L 78 70 Z" fill={tent}/>
+      <line x1="78" y1="32" x2="78" y2="70" stroke={tentDark} strokeWidth="0.6"/>
+      <path d="M 72 70 L 78 56 L 78 70 Z" fill={tentFlap}/>
+      <path d="M 78 56 L 78 70 L 84 70 Z" fill={tentFlap} opacity="0.7"/>
+      <line x1="78" y1="32" x2="84" y2="40" stroke="#5E3E2A" strokeWidth="0.5"/>
+      <circle cx="78" cy="32" r="1.2" fill="#5E3E2A"/>
+      <path d="M 78 32 L 78 22 L 86 26 L 78 28 Z" fill="#E8C5C0" stroke="#9E4536" strokeWidth="0.4"/>
+      <line x1="120" y1="80" x2="120" y2="68" stroke="#5E3E2A" strokeWidth="1"/>
+      <line x1="120" y1="68" x2="128" y2="68" stroke="#5E3E2A" strokeWidth="0.7"/>
+      <circle cx="128" cy="74" r="3.5" fill="#F4D89A" opacity="0.95"/>
+      <circle cx="128" cy="74" r="6" fill="#FFE8A8" opacity="0.3" style={{animation:'breathe 3s ease-in-out infinite'}}/>
+    </svg>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMMON UI ATOMS
+// ═══════════════════════════════════════════════════════════════
+function Card({ children, padding=18, style={}, soft=false, onClick }) {
+  return <div onClick={onClick} style={{background:soft?'var(--card-2)':'var(--card)',borderRadius:'var(--radius-card)',padding,boxShadow:'var(--shadow-soft)',cursor:onClick?'pointer':'default',...style}}>{children}</div>;
+}
+function Pill({ children, active, onClick, style={} }) {
+  return <button onClick={onClick} style={{border:0,background:active?'var(--ink)':'rgba(255,255,255,0.7)',color:active?'var(--cream-50)':'var(--ink-2)',padding:'7px 14px',borderRadius:999,fontSize:13,fontWeight:500,letterSpacing:-0.1,fontFamily:'var(--font-ui)',boxShadow:active?'none':'0 1px 2px rgba(46,58,58,0.05)',cursor:'pointer',...style}}>{children}</button>;
+}
+function Chip({ children, color='var(--sage-200)', textColor='var(--accent-deep)', icon, style={} }) {
+  return <span style={{display:'inline-flex',alignItems:'center',gap:5,padding:'4px 10px',borderRadius:999,background:color,color:textColor,fontSize:12,fontWeight:500,letterSpacing:-0.1,fontFamily:'var(--font-ui)',...style}}>{icon}{children}</span>;
+}
+function SectionLabel({ children, style={} }) {
+  return <div style={{fontFamily:'var(--font-ui)',fontSize:12,fontWeight:600,letterSpacing:1.2,textTransform:'uppercase',color:'var(--ink-3)',...style}}>{children}</div>;
+}
+function H1({ children, style={} }) {
+  return <div style={{fontFamily:'var(--font-display)',fontSize:30,fontWeight:400,lineHeight:1.1,letterSpacing:-0.5,color:'var(--ink)',...style}}>{children}</div>;
+}
+function H2({ children, style={} }) {
+  return <div style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:400,lineHeight:1.2,letterSpacing:-0.3,color:'var(--ink)',...style}}>{children}</div>;
+}
+function StatNumber({ value, label, color='var(--ink)', size=44 }) {
+  return (
+    <div>
+      <div style={{fontFamily:'var(--font-display)',fontSize:size,fontWeight:400,color,lineHeight:1,letterSpacing:-1}}>{value}</div>
+      <div style={{fontSize:11,fontWeight:500,letterSpacing:0.6,color:'var(--ink-3)',textTransform:'uppercase',marginTop:4}}>{label}</div>
+    </div>
+  );
+}
+function SoftSection({ children, tint='sage', style={} }) {
+  const tints={sage:'linear-gradient(180deg,rgba(221,229,206,0.6),rgba(221,229,206,0.2))',sky:'linear-gradient(180deg,rgba(220,234,241,0.6),rgba(220,234,241,0.2))',rose:'linear-gradient(180deg,rgba(242,221,216,0.6),rgba(242,221,216,0.2))',cream:'linear-gradient(180deg,rgba(239,231,208,0.5),rgba(239,231,208,0.15))'};
+  return <div style={{background:tints[tint]||tints.sage,borderRadius:'var(--radius-card)',padding:18,...style}}>{children}</div>;
+}
+function ScreenContainer({ children, scrollable=true, padBottom=100, style={} }) {
+  return <div className="scroll-hide" style={{width:'100%',height:'100%',overflow:scrollable?'auto':'hidden',paddingBottom:padBottom,...style}}>{children}</div>;
+}
+function InAppNav({ title, onBack, action, transparent=false, dark=false }) {
+  const text=dark?'var(--cream-50)':'var(--ink)';
+  return (
+    <div style={{position:'sticky',top:0,zIndex:20,padding:'54px 16px 12px',background:transparent?'transparent':'linear-gradient(180deg, var(--bg) 60%, rgba(247,242,229,0))',display:'flex',alignItems:'center',gap:12,color:text}}>
+      {onBack&&<button onClick={onBack} style={{width:36,height:36,borderRadius:999,background:transparent?'rgba(255,255,255,0.65)':'rgba(255,255,255,0.8)',backdropFilter:'blur(10px)',WebkitBackdropFilter:'blur(10px)',border:'0.5px solid var(--line-strong)',display:'flex',alignItems:'center',justifyContent:'center',color:text,cursor:'pointer',flexShrink:0}}>{ICON.back()}</button>}
+      <div style={{flex:1,fontFamily:'var(--font-display)',fontSize:17,fontWeight:500}}>{title}</div>
+      {action}
+    </div>
+  );
+}
+const ICON = {
+  sun:(active)=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active?1.8:1.6} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4" fill={active?'currentColor':'none'} opacity={active?0.2:1}/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4"/></svg>,
+  tree:(active)=><svg width="22" height="22" viewBox="0 0 24 24" fill={active?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fillOpacity={active?0.22:0}><path d="M12 3c-3 0-5 2-5 5 -2 0-3.5 1.5-3.5 3.5 0 2 1.5 3.5 3.5 3.5h11c2 0 3.5-1.5 3.5-3.5 0-2-1.5-3.5-3.5-3.5 0-3-2-5-6-5z"/><path d="M12 15v6" stroke="currentColor" fill="none"/></svg>,
+  chart:(active)=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l5-5 4 4 8-9"/><circle cx="3" cy="17" r="1.4" fill={active?'currentColor':'none'}/><circle cx="8" cy="12" r="1.4" fill={active?'currentColor':'none'}/><circle cx="12" cy="16" r="1.4" fill={active?'currentColor':'none'}/><circle cx="20" cy="7" r="1.4" fill={active?'currentColor':'none'}/></svg>,
+  feather:(active)=><svg width="22" height="22" viewBox="0 0 24 24" fill={active?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fillOpacity={active?0.2:0}><path d="M20 4c-4 0-7 1-10 4S6 14 6 18l-3 3M14 9l-5 5M9 14l5 5"/></svg>,
+  plus:()=><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M10 4v12M4 10h12"/></svg>,
+  back:()=><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2L2 10l8 8"/></svg>,
+  close:()=><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>,
+  check:()=><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l4 4 8-9"/></svg>,
+  flame:()=><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M7 1c1 2-1 3-1 5a3 3 0 0 0 6 0c0-1-1-2-1-3 2 2 3 4 3 6a5 5 0 0 1-10 0c0-3 3-5 3-8z" fill="currentColor" fillOpacity="0.15"/></svg>,
+  sparkle:()=><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M7 0l1.2 4.8L13 6l-4.8 1.2L7 12l-1.2-4.8L1 6l4.8-1.2z"/></svg>,
+  moon:()=><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M14 9.5A6 6 0 0 1 6.5 2 6 6 0 1 0 14 9.5z"/></svg>,
+  send:()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>,
+};
+function BottomTabBar({ active, onChange }) {
+  const tabs=[{id:'today',label:'Today',icon:ICON.sun},{id:'garden',label:'Garden',icon:ICON.tree},{id:'insights',label:'Insights',icon:ICON.chart},{id:'coach',label:'Coach',icon:ICON.feather}];
+  return (
+    <div style={{position:'absolute',bottom:0,left:0,right:0,paddingBottom:'calc(22px + var(--safe-bottom, 0px))',paddingTop:8,background:'linear-gradient(180deg,rgba(247,242,229,0),rgba(247,242,229,0.85) 40%,rgba(247,242,229,0.95) 70%)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',zIndex:30}}>
+      <div style={{display:'flex',justifyContent:'space-around',padding:'6px 10px'}}>
+        {tabs.map(t=>(
+          <button key={t.id} onClick={()=>onChange(t.id)} style={{border:0,background:'transparent',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'6px 14px',borderRadius:14,color:active===t.id?'var(--accent-deep)':'var(--ink-3)'}}>
+            <div style={{transform:active===t.id?'scale(1.08)':'scale(1)',transition:'transform 0.2s'}}>{t.icon(active===t.id)}</div>
+            <span style={{fontSize:10,fontWeight:active===t.id?600:500,letterSpacing:0.2,fontFamily:'var(--font-ui)'}}>{t.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TODAY SCREEN
+// ═══════════════════════════════════════════════════════════════
+function TodayScreen({ habits, onOpenHabit, onComplete, onAdd, mood='day', greeting='Good morning', userName='' }) {
+  const done=habits.filter(h=>h.done).length, total=habits.length;
+  const seaHealth=Math.round((done/Math.max(total,1))*100);
+  const longestStreak=habits.length?Math.max(...habits.map(h=>h.streak)):0;
+  const atLimit = habits.length >= 5;
+  const nameKanji = getNameKanji(userName);
+  return (
+    <ScreenContainer>
+      <div style={{position:'relative',marginBottom:16}}>
+        <Sky mood={mood} height={188}><Hills mood={mood}/></Sky>
+        <div style={{position:'relative',marginTop:-1}}><Sea height={152} vitality={seaHealth/100} mood={mood}/></div>
+        <div style={{position:'absolute',left:'50%',bottom:100,transform:'translateX(-50%)',zIndex:2}}>
+          <IslandWithTent mood={mood}/>
+        </div>
+        <div style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+          {habits.slice(0,5).map((h,i)=>{
+            const positions=[{x:'15%',bottom:30,size:58,delay:0},{x:'35%',bottom:52,size:54,delay:0.4},{x:'58%',bottom:36,size:62,delay:0.8},{x:'80%',bottom:56,size:50,delay:0.2},{x:'92%',bottom:24,size:44,delay:0.6}][i];
+            return (
+              <div key={h.id} style={{position:'absolute',left:positions.x,bottom:positions.bottom,transform:'translateX(-50%)',animation:`bob ${7+i*1.5}s ease-in-out infinite ${positions.delay}s`,zIndex:10}}>
+                <div style={{position:'relative',animation:'bob 1.6s ease-in-out infinite'}}>
+                  <Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} size={positions.size} withered={h.withered}/>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{position:'absolute',top:56,left:22,right:22,zIndex:20}}>
+          <div style={{fontFamily:'var(--font-ui)',fontSize:12,fontWeight:600,color:mood==='night'?'rgba(255,255,255,0.8)':'var(--ink-2)',letterSpacing:1.4,textTransform:'uppercase'}}>
+            {new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+          </div>
+          <div style={{fontFamily:'var(--font-display)',fontSize:32,fontWeight:400,lineHeight:1.1,color:mood==='night'?'#F8F4E6':'var(--ink)',letterSpacing:-0.6,marginTop:4}}>
+            {greeting}{userName ? (
+              <span>, <span style={{position:'relative',display:'inline-block'}}>
+                {userName}
+                {nameKanji && <span style={{position:'absolute',top:-14,right:-2,fontSize:10,color:mood==='night'?'rgba(248,244,230,0.5)':'var(--ink-4)',fontFamily:'serif',letterSpacing:0,fontWeight:400,lineHeight:1}}>{nameKanji}</span>}
+              </span></span>
+            ) : ''}.
+          </div>
+          <div style={{fontFamily:'var(--font-display)',fontSize:17,fontStyle:'italic',color:mood==='night'?'rgba(248,244,230,0.85)':'var(--ink-2)',marginTop:6,fontWeight:300}}>
+            {!total?'Plant your first habit below.':(done===0?`${total} ${total===1?'soul is':'souls are'} waking with you.`:done===total?'The sea is full of light.':`${done} of ${total} have already drifted up.`)}
+          </div>
+        </div>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,padding:'0 16px',marginBottom:18}}>
+        <Card padding={14} style={{textAlign:'center'}}><StatNumber value={longestStreak} label="Longest streak" size={32}/></Card>
+        <Card padding={14} style={{textAlign:'center'}}><StatNumber value={`${done}/${total}`} label="Today" size={32} color="var(--sage-400)"/></Card>
+        <Card padding={14} style={{textAlign:'center'}}><StatNumber value={`${seaHealth}%`} label="Sea health" size={32} color="var(--sky-400)"/></Card>
+      </div>
+      <div style={{padding:'0 16px',marginBottom:14,display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:12}}>
+        <H2 style={{whiteSpace:'nowrap',paddingBottom:4}}>Today's whispers</H2>
+        <button onClick={atLimit ? undefined : onAdd} style={{border:0,background:'transparent',color:atLimit?'var(--ink-4)':'var(--accent-deep)',fontFamily:'var(--font-ui)',fontSize:14,fontWeight:500,cursor:atLimit?'default':'pointer',display:'flex',alignItems:'center',gap:4,padding:'10px 4px',minHeight:44,opacity:atLimit?0.6:1}} title={atLimit?'5 habit limit reached':'Plant a new habit'}>
+          {atLimit ? <span style={{fontSize:13}}>5 / 5</span> : <><span style={{fontSize:18,lineHeight:1}}>+</span> Plant new</>}
+        </button>
+      </div>
+      <div style={{padding:'0 16px',display:'flex',flexDirection:'column',gap:10}}>
+        {habits.map(h=><HabitCard key={h.id} habit={h} onOpen={()=>onOpenHabit(h.id)} onComplete={()=>onComplete(h.id)}/>)}
+      </div>
+      <div style={{padding:'20px 16px 0'}}><CoachWhisper habits={habits}/></div>
+    </ScreenContainer>
+  );
+}
+function HabitCard({ habit, onOpen, onComplete }) {
+  return (
+    <div onClick={onOpen} style={{display:'flex',alignItems:'stretch',gap:0,background:habit.done?'linear-gradient(135deg,rgba(221,229,206,0.45),rgba(221,229,206,0.15))':'var(--card)',borderRadius:'var(--radius-card)',boxShadow:'var(--shadow-soft)',overflow:'hidden',cursor:'pointer',border:habit.done?'0.5px solid rgba(143,167,127,0.3)':'0.5px solid transparent'}}>
+      <div style={{width:114,flexShrink:0,position:'relative',background:habit.done?`linear-gradient(135deg,${habit.hue}22,${habit.hue}08)`:`linear-gradient(135deg,${habit.hue}18,${habit.hue}06)`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+        <Mochi streak={habit.streak} hue={habit.hue} accessory={habit.accessory} size={80} withered={habit.withered}/>
+        {habit.streak>0&&<div style={{position:'absolute',top:8,left:8,background:'rgba(255,255,255,0.85)',backdropFilter:'blur(8px)',padding:'2px 6px',borderRadius:8,fontSize:10,fontWeight:600,color:habit.hue,letterSpacing:-0.1,display:'flex',alignItems:'center',gap:3}}><span style={{color:habit.hue}}>{ICON.flame()}</span>{habit.streak}</div>}
+      </div>
+      <div style={{flex:1,padding:'14px 12px',minWidth:0}}>
+        <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:500,color:'var(--ink)',letterSpacing:-0.2,marginBottom:2}}>{habit.name}</div>
+        <div style={{fontSize:12,color:'var(--ink-3)',fontWeight:500,letterSpacing:-0.05,marginBottom:6}}>{habit.cue}</div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          <Chip color={`${habit.hue}22`} textColor={habit.hue}>{habit.time}</Chip>
+          {habit.frequency==='weekly'&&<Chip color="rgba(184,160,196,0.18)" textColor="var(--ink-3)">weekly</Chip>}
+          {habit.withered&&<Chip color="rgba(212,156,151,0.18)" textColor="var(--rose-400)">drifting</Chip>}
+          {habit.done&&<Chip color="rgba(143,167,127,0.2)" textColor="var(--sage-400)" icon={<span style={{fontSize:9}}>✓</span>}>ascended</Chip>}
+        </div>
+      </div>
+      <div style={{display:'flex',alignItems:'center',padding:'0 14px'}}>
+        <button onClick={e=>{e.stopPropagation();if(!habit.done)onComplete();}} style={{width:44,height:44,borderRadius:999,border:habit.done?0:'1.5px solid var(--line-strong)',background:habit.done?'var(--sage-300)':'transparent',color:habit.done?'white':'var(--ink-3)',display:'flex',alignItems:'center',justifyContent:'center',cursor:habit.done?'default':'pointer',transition:'all 0.2s'}}>
+          {habit.done?ICON.check():<div style={{width:4,height:4,borderRadius:999,background:'currentColor'}}/>}
+        </button>
+      </div>
+    </div>
+  );
+}
+function CoachWhisper({ habits }) {
+  if (!habits.length) return null;
+  const wilting=habits.find(h=>h.withered);
+  const longest=habits.reduce((a,b)=>a.streak>b.streak?a:b,habits[0]);
+  const message=wilting?`${wilting.creatureName} has drifted. A smaller version — perhaps just "${wilting.minimum.toLowerCase()}" tonight — would bring it close again.`:`${longest.creatureName} is glowing. Day ${longest.streak} is when mochi begin to rise.`;
+  return (
+    <Card style={{display:'flex',gap:12,alignItems:'flex-start',background:'linear-gradient(135deg,rgba(220,234,241,0.5),rgba(247,242,229,0.7))',border:'0.5px solid rgba(143,167,127,0.18)'}} padding={16}>
+      <div style={{width:36,height:36,borderRadius:999,flexShrink:0,background:'var(--card)',border:'0.5px solid var(--line-strong)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--sage-400)'}}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" opacity="0.85"><path d="M22 4c-3 1-6 2-10 5s-6 6-8 11c1-3 3-6 6-8s7-3 9-3-3 3-5 5l3 3c2-2 4-5 5-13z"/></svg>
+      </div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:11,fontWeight:600,letterSpacing:1,textTransform:'uppercase',color:'var(--ink-3)',marginBottom:2}}>Mochi whispers</div>
+        <div style={{fontFamily:'var(--font-display)',fontSize:15,fontStyle:'italic',color:'var(--ink-2)',lineHeight:1.4,fontWeight:300}}>{message}</div>
+      </div>
+    </Card>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GARDEN SCREEN
+// ═══════════════════════════════════════════════════════════════
+function SakuraTree({ size=100 }) {
+  return (
+    <svg width={size} height={size*1.3} viewBox="0 0 100 130" style={{overflow:'visible'}}>
+      <path d="M 50 130 Q 48 100, 50 80 Q 52 60, 50 50" stroke="#5E3E2A" strokeWidth="6" fill="none" strokeLinecap="round"/>
+      <path d="M 50 80 Q 35 75, 28 65" stroke="#5E3E2A" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <path d="M 50 75 Q 65 70, 75 60" stroke="#5E3E2A" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <ellipse cx="50" cy="40" rx="34" ry="28" fill="#F2DDD8" opacity="0.95"/>
+      <ellipse cx="32" cy="50" rx="22" ry="20" fill="#E8C5C0" opacity="0.85"/>
+      <ellipse cx="70" cy="48" rx="22" ry="22" fill="#E8C5C0" opacity="0.85"/>
+      <ellipse cx="50" cy="28" rx="26" ry="20" fill="#F2DDD8"/>
+      <ellipse cx="40" cy="32" rx="14" ry="12" fill="#F8E8E5" opacity="0.8"/>
+      {[[28,40],[44,28],[60,32],[72,40],[36,52],[64,52]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2" fill="#D49C97" opacity="0.7"/>)}
+    </svg>
+  );
+}
+function GardenScreen({ habits, onOpenHabit, mood='day' }) {
+  const ascended=habits.filter(h=>h.streak>=30).length;
+  const totalDays=habits.reduce((s,h)=>s+h.streak,0);
+  const skies={dawn:['#F8E6D6','#E8B89C'],day:['#DCEAF1','#B8D4E3'],dusk:['#E8C5C0','#8C7A9E'],night:['#1F2B3E','#3D5275']};
+  const [sk1,sk2]=skies[mood]||skies.day;
+  const grassA=mood==='night'?'#2A3A30':mood==='dusk'?'#5C6B4F':'#7B9C5E';
+  const grassB=mood==='night'?'#3A4D40':mood==='dusk'?'#7E8E68':'#A6C081';
+  const hillA=mood==='night'?'#2D3D54':mood==='dusk'?'#6B5E78':'#9CB594';
+  const hillB=mood==='night'?'#1A2438':mood==='dusk'?'#4E4866':'#6E8868';
+  const isDark=mood==='night';
+  return (
+    <div style={{width:'100%',height:'100%',position:'relative',overflow:'hidden',background:'var(--bg)'}}>
+      <div className="scroll-hide" style={{width:'100%',height:'100%',overflow:'auto',paddingBottom:170}}>
+        <div style={{position:'absolute',top:56,left:22,right:22,zIndex:25}}>
+          <div style={{fontFamily:'var(--font-ui)',fontSize:11,fontWeight:600,letterSpacing:1.4,textTransform:'uppercase',color:mood==='night'?'rgba(248,244,230,0.85)':'var(--ink-2)',textShadow:'0 1px 2px rgba(255,255,255,0.5)'}}>Your village · 村</div>
+          <H1 style={{marginTop:4,color:mood==='night'?'#F8F4E6':'var(--ink)',textShadow:'0 2px 6px rgba(255,255,255,0.4)'}}>Where they live</H1>
+        </div>
+        {/* Panorama */}
+        <div style={{position:'relative',height:320,overflow:'hidden',background:`linear-gradient(180deg,${sk1} 0%,${sk2} 60%)`}}>
+          <div style={{position:'absolute',top:50,right:36,width:54,height:54,borderRadius:'50%',background:isDark?'radial-gradient(circle at 35% 35%,#F4ECDB,#D9C9A0)':'radial-gradient(circle at 35% 35%,#FFFBE8,#F4D89A)',boxShadow:isDark?'0 0 30px rgba(244,236,219,0.5)':'0 0 50px rgba(244,216,154,0.5)',zIndex:1}}/>
+          <svg viewBox="0 0 400 110" preserveAspectRatio="none" style={{position:'absolute',top:110,left:0,width:'100%',height:110,zIndex:2,display:'block'}}>
+            <path d="M 130 100 L 200 36 L 270 100 Z" fill={hillA} opacity="0.85"/>
+            <path d="M 200 36 L 190 50 L 210 50 Z" fill="#F8F4E6" opacity={isDark?0.4:0.85}/>
+            <path d="M0 78 Q 40 60 80 70 T 160 64 T 240 70 T 320 64 T 400 70 L 400 110 L 0 110 Z" fill={hillB} opacity="0.7"/>
+          </svg>
+          {(mood==='day'||mood==='dawn')&&<><Cloud x={-20} y={40} w={110} opacity={0.65}/><Cloud x={240} y={28} w={80} opacity={0.55}/></>}
+          <div style={{position:'absolute',top:130,left:16,zIndex:4}}><SakuraTree size={100}/></div>
+          <div style={{position:'absolute',top:120,right:8,zIndex:4}}><SakuraTree size={120}/></div>
+          {[1,2,3,4,5,6,7,8].map(i=><div key={i} style={{position:'absolute',left:`${(i*47)%100}%`,top:80+(i*23)%140,width:6,height:6,background:'radial-gradient(circle,#F2DDD8,#E8C5C0)',borderRadius:'50% 0',opacity:isDark?0.4:0.7,transform:`rotate(${i*30}deg)`,animation:`petalFall${i%3} ${8+i%3}s linear infinite ${i*0.5}s`}}/>)}
+          <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:`linear-gradient(180deg,${grassA} 0%,${grassB} 100%)`,zIndex:5}}/>
+          {habits.slice(0,5).map((h,i)=>{
+            const positions=[{left:'14%',bottom:16,scale:0.65},{left:'32%',bottom:6,scale:0.85},{left:'54%',bottom:22,scale:0.55},{left:'72%',bottom:10,scale:0.75},{left:'88%',bottom:26,scale:0.5}][i];
+            return <div key={h.id} style={{position:'absolute',left:positions.left,bottom:positions.bottom,transform:`translateX(-50%) scale(${positions.scale})`,transformOrigin:'50% 100%',zIndex:Math.round(100-parseFloat(positions.left)),animation:`bob ${3+i*0.5}s ease-in-out infinite ${i*0.3}s`}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} size={72} withered={h.withered}/></div>;
+          })}
+          {isDark&&Array.from({length:10}).map((_,i)=><div key={i} style={{position:'absolute',left:`${10+(i*73)%80}%`,top:130+(i*17)%130,width:3,height:3,borderRadius:'50%',background:'#FFEDB4',boxShadow:'0 0 6px #FFEDB4,0 0 14px rgba(255,237,180,0.6)',animation:`shimmer ${1.5+(i%4)*0.4}s ease-in-out infinite ${i*0.2}s`,zIndex:8}}/>)}
+        </div>
+        <div style={{padding:'14px 16px 14px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,position:'relative',zIndex:5}}>
+          <Card padding={14} style={{textAlign:'center'}}><StatNumber value={habits.length} label="Roaming" size={28}/></Card>
+          <Card padding={14} style={{textAlign:'center'}}><StatNumber value={ascended} label="Ascended" size={28} color="var(--ochre-400)"/></Card>
+          <Card padding={14} style={{textAlign:'center'}}><StatNumber value={totalDays} label="Days kept" size={28} color="var(--sage-400)"/></Card>
+        </div>
+        <div style={{padding:'0 16px'}}>
+          <SectionLabel style={{marginBottom:10,padding:'0 6px'}}>Inhabitants</SectionLabel>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {habits.map(h=>(
+              <div key={h.id} onClick={()=>onOpenHabit(h.id)} style={{borderRadius:'var(--radius-card)',overflow:'hidden',cursor:'pointer',background:`linear-gradient(135deg,${h.hue}1A,${h.hue}06)`,border:'0.5px solid rgba(46,58,58,0.06)',boxShadow:'var(--shadow-soft)',display:'flex',alignItems:'stretch'}}>
+                <div style={{width:150,flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center'}}><HabitSceneMini habit={h} size={148}/></div>
+                <div style={{flex:1,padding:'14px 16px',display:'flex',flexDirection:'column',justifyContent:'center',minWidth:0}}>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:500,color:'var(--ink)',letterSpacing:-0.2}}>{h.creatureName}</div>
+                  <div style={{fontSize:12,color:'var(--ink-3)',marginTop:2}}>{h.name}</div>
+                  <div style={{display:'flex',gap:6,marginTop:8,flexWrap:'wrap'}}>
+                    <Chip color={`${h.hue}22`} textColor={h.hue}><span style={{color:h.hue}}>{ICON.flame()}</span>{h.streak}d</Chip>
+                    {h.withered&&<Chip color="rgba(212,156,151,0.18)" textColor="var(--rose-400)">drifting</Chip>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{padding:'20px 16px 0'}}>
+          <Card padding={16}>
+            <div style={{fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:'uppercase',color:'var(--ink-3)',marginBottom:10}}>How they grow</div>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:4}}>
+              {['seed','hatchling','toddler','grown','ascending','transformed'].map((s,i)=>(
+                <div key={s} style={{textAlign:'center'}}>
+                  <div style={{height:52,display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
+                    {s==='transformed'
+                      ? <div style={{fontSize:22,lineHeight:1,animation:'breathe 3s ease-in-out infinite'}}>✦</div>
+                      : <Mochi fixedStage={s} hue={HABIT_HUES.sage} size={38}/>}
+                  </div>
+                  <div style={{fontSize:8,fontWeight:600,color:s==='transformed'?'var(--ochre-400)':'var(--ink-3)',marginTop:4,letterSpacing:0.3,textTransform:'uppercase'}}>{[0,3,7,14,30,90][i]}d</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INSIGHTS SCREEN
+// ═══════════════════════════════════════════════════════════════
+function InsightsScreen({ habits, userName='' }) {
+  const weekHistory=Array.from({length:7},(_,i)=>{const idx=29-(6-i);return habits.filter(h=>h.history[idx]).length;});
+  const max=Math.max(...weekHistory,habits.length);
+
+  // Pick a tip from the most active habit theme
+  const tipHabit = habits.length ? habits.reduce((a,b)=>a.streak>b.streak?a:b,habits[0]) : null;
+  const tipTheme = tipHabit ? inferTheme(tipHabit).theme : 'ambient';
+  const tip = HABIT_TIPS[tipTheme] || HABIT_TIPS.ambient;
+
+  // My leaderboard rank among friends + me
+  const myStreak = habits.length ? habits.reduce((s,h)=>s+h.streak,0) : 0;
+  const myDone   = habits.filter(h=>h.done).length;
+  const meEntry  = { name: userName || 'You', streak: myStreak, done: myDone, total: habits.length, hue: HABIT_HUES.sage, isMe: true };
+  const leaderboard = [...MOCK_FRIENDS.map(f=>({...f,isMe:false})), meEntry]
+    .sort((a,b) => b.streak - a.streak);
+
+  return (
+    <ScreenContainer>
+      <div style={{padding:'54px 22px 0'}}><SectionLabel>The pattern</SectionLabel><H1 style={{marginTop:4,marginBottom:24}}>Insights</H1></div>
+
+      {/* Weekly bar chart */}
+      <div style={{padding:'0 16px 16px'}}>
+        <Card padding={20}>
+          <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',marginBottom:14}}>
+            <H2 style={{fontSize:18}}>This week</H2>
+            <span style={{fontSize:13,color:'var(--ink-3)'}}>{weekHistory.reduce((a,b)=>a+b,0)} risings</span>
+          </div>
+          <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',height:120,gap:4}}>
+            {weekHistory.map((v,i)=>{
+              const labels=['M','T','W','T','F','S','S'],isToday=i===6;
+              return (
+                <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:8}}>
+                  <div style={{width:'100%',height:`${(v/Math.max(max,1))*90+8}px`,background:isToday?'linear-gradient(180deg,var(--sage-300),var(--sage-400))':`linear-gradient(180deg,${v>0?'var(--sky-300)':'var(--cream-200)'},${v>0?'var(--sky-400)':'var(--cream-200)'})`,borderRadius:8,opacity:v===0?0.5:1,position:'relative'}}>
+                    {v>0&&<div style={{position:'absolute',top:-22,left:'50%',transform:'translateX(-50%)',fontSize:11,fontWeight:600,color:'var(--ink-2)'}}>{v}</div>}
+                  </div>
+                  <div style={{fontSize:10,fontWeight:600,color:isToday?'var(--ink)':'var(--ink-3)',letterSpacing:0.5}}>{labels[i]}</div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+
+      {/* By creature */}
+      <div style={{padding:'0 16px 16px'}}>
+        <SectionLabel style={{marginBottom:10,padding:'0 6px'}}>By creature</SectionLabel>
+        <Card padding={0} style={{overflow:'hidden'}}>
+          {habits.length === 0 && (
+            <div style={{padding:'24px 16px',textAlign:'center',color:'var(--ink-4)',fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:15}}>No mochi yet — plant a habit to begin.</div>
+          )}
+          {habits.map((h,i)=>(
+            <div key={h.id}>
+              <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 16px'}}>
+                <div style={{width:40,height:40,borderRadius:12,flexShrink:0,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center'}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} size={36} withered={h.withered}/></div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:14.5,fontWeight:500,color:'var(--ink)'}}>{h.creatureName}</div>
+                  <div style={{fontSize:11,color:'var(--ink-3)',marginTop:1}}>{h.name}{h.frequency==='weekly'?' · weekly':''}</div>
+                </div>
+                <div style={{display:'flex',gap:1.5,alignItems:'flex-end',height:22}}>
+                  {h.history.slice(-14).map((d,j)=><div key={j} style={{width:4,height:d?'100%':'30%',background:d?h.hue:'var(--cream-200)',borderRadius:2,opacity:d?0.8:0.7}}/>)}
+                </div>
+                <div style={{fontFamily:'var(--font-display)',fontSize:22,color:'var(--ink)',minWidth:32,textAlign:'right',letterSpacing:-0.5}}>{h.streak}</div>
+              </div>
+              {i<habits.length-1&&<div style={{height:0.5,background:'var(--line)',marginLeft:68}}/>}
+            </div>
+          ))}
+        </Card>
+      </div>
+
+      {/* Habit hint / book */}
+      {tipHabit && (
+        <div style={{padding:'0 16px 16px'}}>
+          <SectionLabel style={{marginBottom:10,padding:'0 6px'}}>Today's hint</SectionLabel>
+          <Card padding={18} style={{background:'linear-gradient(135deg,rgba(220,234,241,0.4),rgba(247,242,229,0.7))',border:'0.5px solid rgba(143,167,127,0.18)'}}>
+            <div style={{display:'flex',gap:14,alignItems:'flex-start'}}>
+              <div style={{width:40,height:40,borderRadius:12,background:'var(--card)',border:'0.5px solid var(--line-strong)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18}}>📖</div>
+              <div style={{flex:1}}>
+                <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:15,color:'var(--ink-2)',lineHeight:1.5,fontWeight:300,marginBottom:8}}>{tip.tip}</div>
+                <div style={{fontSize:11,color:'var(--ink-4)',fontWeight:600,letterSpacing:0.4}}>
+                  <span style={{color:'var(--ink-3)'}}>Read: </span>{tip.book} — {tip.author}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Friends leaderboard */}
+      <div style={{padding:'0 16px 16px'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:10,padding:'0 6px'}}>
+          <SectionLabel>Accountability circle</SectionLabel>
+          <span style={{fontSize:11,color:'var(--ink-4)',fontStyle:'italic'}}>friend-only</span>
+        </div>
+        <Card padding={0} style={{overflow:'hidden'}}>
+          {leaderboard.map((f,i)=>(
+            <div key={f.name} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 16px',background:f.isMe?`linear-gradient(90deg,${HABIT_HUES.sage}12,transparent)`:'transparent'}}>
+              <div style={{width:24,textAlign:'center',fontFamily:'var(--font-display)',fontSize:14,fontWeight:400,color:i===0?'var(--ochre-400)':i===1?'var(--ink-3)':i===2?'var(--rose-300)':'var(--ink-4)'}}>
+                {i===0?'✦':i===1?'✧':i===2?'◇':`${i+1}`}
+              </div>
+              <div style={{width:32,height:32,borderRadius:999,background:f.hue+'33',border:`1.5px solid ${f.hue}`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <Mochi fixedStage={f.stage||'seed'} hue={f.hue} size={26}/>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:14,fontWeight:f.isMe?600:500,color:'var(--ink)'}}>{f.name}{f.isMe&&<span style={{fontSize:11,color:'var(--ink-4)',fontWeight:400}}> · you</span>}</div>
+                <div style={{fontSize:11,color:'var(--ink-3)',marginTop:1}}>{f.done}/{f.total} today</div>
+              </div>
+              <div style={{fontFamily:'var(--font-display)',fontSize:20,color:'var(--ink)',letterSpacing:-0.5,display:'flex',alignItems:'baseline',gap:3}}>
+                {f.streak}<span style={{fontSize:10,color:'var(--ink-4)',fontWeight:500,letterSpacing:0.5}}>d</span>
+              </div>
+            </div>
+          ))}
+        </Card>
+        <div style={{marginTop:10,padding:'0 4px',fontSize:11,color:'var(--ink-4)',fontStyle:'italic',textAlign:'center'}}>Invite friends to share your streak · coming soon</div>
+      </div>
+
+      {/* James Clear quote */}
+      <div style={{padding:'0 16px 16px'}}>
+        <SoftSection tint="rose" style={{textAlign:'center',padding:'28px 22px'}}>
+          <div style={{fontFamily:'var(--font-display)',fontSize:19,fontStyle:'italic',color:'var(--ink)',lineHeight:1.4,fontWeight:300}}>"You do not rise to the level of your goals. You fall to the level of your systems."</div>
+          <div style={{marginTop:10,fontSize:12,color:'var(--ink-3)',letterSpacing:0.4}}>— James Clear, Atomic Habits</div>
+        </SoftSection>
+      </div>
+    </ScreenContainer>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COACH SCREEN — powered via Cloudflare Worker proxy
+// ═══════════════════════════════════════════════════════════════
+function CoachScreen({ habits, mood='day' }) {
+  const [messages, setMessages] = React.useState(COACH_MESSAGES);
+  const [draft, setDraft] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const scrollerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (scrollerRef.current) scrollerRef.current.scrollTop = scrollerRef.current.scrollHeight;
+  }, [messages, loading]);
+
+  const send = async (text) => {
+    if (!text.trim() || loading) return;
+    const newMessages = [...messages, { who:'me', text }];
+    setMessages(newMessages);
+    setDraft('');
+    setLoading(true);
+
+    const habitSummary = habits.length
+      ? habits.map(h=>`${h.creatureName} (${h.name}): ${h.streak}-day streak${h.withered?', drifting':''}${h.done?', done today':''}`).join('\n')
+      : 'No habits planted yet.';
+
+    const conversationHistory = newMessages.map(m=>({
+      role: m.who==='me' ? 'user' : 'assistant',
+      content: m.text
+    }));
+
+    try {
+      let reply;
+      if (MOCHI_COACH_URL) {
+        const res = await fetch(MOCHI_COACH_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: conversationHistory, habitSummary })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'upstream error');
+        reply = data.reply;
+      } else {
+        // Graceful fallback — smart template responses until proxy is deployed
+        await new Promise(r => setTimeout(r, 400 + Math.random() * 600));
+        reply = templateReply(text, habits);
+      }
+      setMessages(m => [...m, { who:'coach', text:reply }]);
+    } catch {
+      setMessages(m => [...m, { who:'coach', text:'The tide went quiet. Speak again in a moment.' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column',background:'var(--bg)'}}>
+      {/* Header */}
+      <div style={{position:'relative',flexShrink:0}}>
+        <Sky mood={mood} height={170}><Hills mood={mood}/></Sky>
+        <div style={{position:'absolute',top:56,left:22,right:22}}>
+          <div style={{fontSize:11,fontWeight:600,letterSpacing:1.4,textTransform:'uppercase',color:mood==='night'?'rgba(248,244,230,0.7)':'var(--ink-3)'}}>Your coach</div>
+          <H1 style={{marginTop:4,color:mood==='night'?'#F8F4E6':'var(--ink)'}}>Mochi</H1>
+        </div>
+        <div style={{position:'absolute',right:14,bottom:0}}>
+          <Mochi fixedStage="ascending" hue={HABIT_HUES.ochre} accessory="star" size={96}/>
+        </div>
+        {!MOCHI_COACH_URL && (
+          <div style={{position:'absolute',bottom:8,left:16,fontSize:10,color:mood==='night'?'rgba(248,244,230,0.5)':'var(--ink-4)',fontStyle:'italic',letterSpacing:0.2}}>
+            Template mode · deploy worker for Claude AI
+          </div>
+        )}
+      </div>
+      {/* Messages */}
+      <div ref={scrollerRef} className="scroll-hide" style={{flex:1,overflow:'auto',padding:'12px 16px 12px'}}>
+        {messages.map((m,i)=>(
+          <div key={i} style={{display:'flex',justifyContent:m.who==='me'?'flex-end':'flex-start',marginBottom:10}}>
+            <div style={{maxWidth:'78%',padding:'12px 16px',borderRadius:22,background:m.who==='me'?'var(--ink)':'var(--card)',color:m.who==='me'?'var(--cream-50)':'var(--ink)',fontFamily:m.who==='me'?'var(--font-ui)':'var(--font-display)',fontStyle:m.who==='me'?'normal':'italic',fontSize:m.who==='me'?15:16,fontWeight:m.who==='me'?400:300,lineHeight:1.4,letterSpacing:-0.1,boxShadow:m.who==='me'?'none':'var(--shadow-soft)',borderBottomRightRadius:m.who==='me'?6:22,borderBottomLeftRadius:m.who==='me'?22:6}}>{m.text}</div>
+          </div>
+        ))}
+        {loading && (
+          <div style={{display:'flex',justifyContent:'flex-start',marginBottom:10}}>
+            <div style={{padding:'14px 18px',borderRadius:22,borderBottomLeftRadius:6,background:'var(--card)',boxShadow:'var(--shadow-soft)',display:'flex',gap:5,alignItems:'center'}}>
+              {[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:'50%',background:'var(--ink-3)',animation:`typing 1.2s ease-in-out infinite ${i*0.2}s`}}/>)}
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Quick suggestions */}
+      <div style={{padding:'0 16px 8px',display:'flex',gap:6,overflowX:'auto'}} className="scroll-hide">
+        {COACH_SUGGESTIONS.map((s,i)=>(
+          <button key={i} onClick={()=>send(s)} disabled={loading} style={{border:'0.5px solid var(--line-strong)',background:'var(--card-2)',color:'var(--ink-2)',padding:'8px 14px',borderRadius:999,fontSize:13,fontFamily:'var(--font-ui)',whiteSpace:'nowrap',cursor:loading?'default':'pointer',flexShrink:0,opacity:loading?0.5:1}}>{s}</button>
+        ))}
+      </div>
+      {/* Input */}
+      <div style={{padding:'8px 16px 100px',display:'flex',gap:8}}>
+        <div style={{flex:1,display:'flex',alignItems:'center',gap:8,background:'var(--card)',borderRadius:999,padding:'4px 6px 4px 18px',boxShadow:'var(--shadow-soft)',border:'0.5px solid var(--line-strong)'}}>
+          <input value={draft} onChange={e=>setDraft(e.target.value)} onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&send(draft)} placeholder="Speak to Mochi…" disabled={loading} style={{flex:1,border:0,background:'transparent',outline:'none',fontFamily:'var(--font-ui)',fontSize:15,color:'var(--ink)',padding:'12px 0'}}/>
+          <button onClick={()=>send(draft)} disabled={!draft.trim()||loading} style={{width:40,height:40,borderRadius:999,border:0,background:draft.trim()&&!loading?'var(--accent)':'var(--cream-200)',color:'white',cursor:draft.trim()&&!loading?'pointer':'default',display:'flex',alignItems:'center',justifyContent:'center',transition:'all 0.2s'}}>{ICON.send()}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DETAIL SCREEN
+// ═══════════════════════════════════════════════════════════════
+function DetailScreen({ habit, onBack, onComplete, onRetire, onDelete, mood='day' }) {
+  const [showMenu, setShowMenu] = React.useState(false);
+  if (!habit) return null;
+  const stage=stageFromStreak(habit.streak);
+  const stageNames={seed:'Seed',hatchling:'Hatchling',toddler:'Growing',grown:'Awake',ascending:'Ascending'};
+  const nextThreshold={seed:3,hatchling:7,toddler:14,grown:30,ascending:null}[stage];
+  const progress=nextThreshold?habit.streak/nextThreshold:1;
+  return (
+    <div style={{height:'100%',display:'flex',flexDirection:'column'}}>
+      <div style={{position:'relative',height:360,flexShrink:0,overflow:'hidden'}}>
+        <Sky mood={mood} height={300}><Hills mood={mood}/></Sky>
+        <div style={{marginTop:-1}}><Sea height={60} vitality={0.6} mood={mood}/></div>
+        <div style={{position:'absolute',left:0,right:0,bottom:0,display:'flex',justifyContent:'center'}}><HabitScene habit={habit} size={360}/></div>
+        <div style={{position:'absolute',top:54,left:16,right:16,display:'flex',alignItems:'center',justifyContent:'space-between',zIndex:10}}>
+          <button onClick={onBack} style={{width:36,height:36,borderRadius:999,background:'rgba(255,255,255,0.85)',backdropFilter:'blur(10px)',border:'0.5px solid rgba(46,58,58,0.1)',color:'var(--ink-2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}>{ICON.back()}</button>
+          <button onClick={()=>setShowMenu(true)} style={{width:36,height:36,borderRadius:999,background:'rgba(255,255,255,0.85)',backdropFilter:'blur(10px)',border:'0.5px solid rgba(46,58,58,0.1)',color:'var(--ink-2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div className="scroll-hide" style={{flex:1,overflow:'auto',marginTop:-50,paddingBottom:100}}>
+        <div style={{background:'var(--bg)',borderTopLeftRadius:28,borderTopRightRadius:28,padding:'24px 22px 18px',position:'relative'}}>
+          <div style={{display:'flex',alignItems:'baseline',gap:12,marginBottom:6}}>
+            <H1 style={{fontSize:28}}>{habit.creatureName}</H1>
+            <Chip color={`${habit.hue}22`} textColor={habit.hue}>{stageNames[stage]}</Chip>
+          </div>
+          <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:17,color:'var(--ink-2)',fontWeight:300,lineHeight:1.3,marginBottom:4}}>I am becoming <span style={{color:habit.hue,fontStyle:'normal',fontWeight:500}}>{habit.identity}</span>.</div>
+          <div style={{fontSize:13,color:'var(--ink-3)'}}>Habit: {habit.name}</div>
+          <div style={{marginTop:18,display:'grid',gridTemplateColumns:'1fr 1fr 1fr',background:'var(--card)',borderRadius:'var(--radius-card)',padding:'14px 4px',boxShadow:'var(--shadow-soft)'}}>
+            {[{val:habit.streak,label:'streak'},{val:habit.longest,label:'longest'},{val:`${Math.round(habit.history.filter(Boolean).length*100/habit.history.length)}%`,label:'30 days'}].map(s=>(
+              <div key={s.label} style={{textAlign:'center',padding:'0 4px'}}>
+                <div style={{fontFamily:'var(--font-display)',fontSize:30,fontWeight:400,lineHeight:1,color:'var(--ink)',letterSpacing:-0.8}}>{s.val}</div>
+                <div style={{fontSize:10,fontWeight:600,color:'var(--ink-3)',letterSpacing:1,textTransform:'uppercase',marginTop:4}}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+          {nextThreshold&&(
+            <div style={{marginTop:18}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
+                <span style={{fontSize:12,fontWeight:600,color:'var(--ink-2)',letterSpacing:0.3}}>{nextThreshold-habit.streak} days until {stage==='seed'?'hatching':stage==='grown'?'ascending':'next stage'}</span>
+                <span style={{fontSize:12,fontWeight:500,color:'var(--ink-3)'}}>{habit.streak} / {nextThreshold}</span>
+              </div>
+              <div style={{height:8,background:'var(--cream-200)',borderRadius:999,overflow:'hidden'}}>
+                <div style={{height:'100%',width:`${progress*100}%`,background:`linear-gradient(90deg,${habit.hue},${habit.hue}cc)`,borderRadius:999,transition:'width 0.5s'}}/>
+              </div>
+            </div>
+          )}
+        </div>
+        <div style={{padding:'6px 16px 0'}}>
+          <SectionLabel style={{marginBottom:10,padding:'0 6px'}}>The loop</SectionLabel>
+          <Card padding={0} style={{overflow:'hidden'}}>
+            {[{icon:'⟢',label:'Cue',value:habit.cue},{icon:'◌',label:'Craving',value:`To feel like ${habit.identity}`},{icon:'❀',label:'Response',value:habit.response},{icon:'✦',label:'Reward',value:habit.reward}].map((row,i)=>(
+              <React.Fragment key={row.label}>
+                <div style={{padding:'14px 16px',display:'flex',alignItems:'flex-start',gap:14}}>
+                  <div style={{width:32,height:32,borderRadius:999,flexShrink:0,background:`${habit.hue}1F`,color:habit.hue,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>{row.icon}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:10,fontWeight:700,color:'var(--ink-3)',letterSpacing:1.2,textTransform:'uppercase',marginBottom:2}}>{row.label}</div>
+                    <div style={{fontSize:14.5,color:'var(--ink)',lineHeight:1.35,letterSpacing:-0.1}}>{row.value}</div>
+                  </div>
+                </div>
+                {i<3&&<div style={{height:0.5,background:'var(--line)',marginLeft:60}}/>}
+              </React.Fragment>
+            ))}
+          </Card>
+        </div>
+        <div style={{padding:'20px 16px 0'}}>
+          <SoftSection tint="cream" style={{display:'flex',gap:14,alignItems:'center'}}>
+            <div style={{width:44,height:44,borderRadius:999,background:'var(--ochre-200)',color:'var(--ochre-400)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" strokeLinecap="round"/></svg>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:11,fontWeight:700,letterSpacing:1,textTransform:'uppercase',color:'var(--ink-3)'}}>Smallest version</div>
+              <div style={{fontFamily:'var(--font-display)',fontSize:17,color:'var(--ink)',marginTop:2,fontStyle:'italic'}}>"{habit.minimum}."</div>
+            </div>
+          </SoftSection>
+        </div>
+        <div style={{padding:'20px 16px 0'}}>
+          <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',padding:'0 6px',marginBottom:10}}>
+            <SectionLabel>Last 30 days</SectionLabel>
+            <span style={{fontSize:11,color:'var(--ink-4)'}}>Today →</span>
+          </div>
+          <Card>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(15,1fr)',gap:4}}>
+              {habit.history.map((done,i)=><div key={i} style={{aspectRatio:'1',borderRadius:6,background:done?habit.hue:'var(--cream-200)',opacity:done?(0.4+(i/30)*0.6):0.5}}/>)}
+            </div>
+          </Card>
+        </div>
+        {!habit.done&&(
+          <div style={{padding:'24px 16px 0'}}>
+            <button onClick={onComplete} style={{width:'100%',height:56,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,letterSpacing:-0.2,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:'0 8px 24px rgba(46,58,58,0.18)'}}>{ICON.check()} Mark as done today</button>
+          </div>
+        )}
+        {habit.done&&<div style={{padding:'24px 16px 0'}}><div style={{padding:18,borderRadius:'var(--radius-card)',background:'rgba(143,167,127,0.15)',textAlign:'center',fontFamily:'var(--font-display)',fontStyle:'italic',color:'var(--sage-400)',fontSize:15}}>{habit.creatureName} has risen for today.</div></div>}
+        <div style={{padding:'32px 16px 0',textAlign:'center'}}><button onClick={()=>setShowMenu(true)} style={{border:0,background:'transparent',color:'var(--ink-3)',fontSize:13,fontWeight:500,cursor:'pointer',padding:'8px 12px'}}>Manage this habit</button></div>
+      </div>
+      {showMenu&&(
+        <div style={{position:'absolute',inset:0,zIndex:80,background:'rgba(46,58,58,0.35)',backdropFilter:'blur(2px)',display:'flex',flexDirection:'column',justifyContent:'flex-end',animation:'fadeIn 0.2s'}} onClick={()=>setShowMenu(false)}>
+          <div onClick={e=>e.stopPropagation()} style={{background:'var(--card)',borderTopLeftRadius:28,borderTopRightRadius:28,padding:'12px 16px 30px',boxShadow:'0 -8px 40px rgba(46,58,58,0.2)',animation:'slideUp 0.3s ease-out'}}>
+            <div style={{width:38,height:4,borderRadius:999,background:'var(--cream-300)',margin:'4px auto 16px'}}/>
+            <div style={{textAlign:'center',padding:'4px 0 18px'}}>
+              <div style={{fontFamily:'var(--font-display)',fontSize:19,color:'var(--ink)',fontWeight:500,letterSpacing:-0.2}}>{habit.creatureName}</div>
+              <div style={{fontSize:12,color:'var(--ink-3)',marginTop:2}}>{habit.name} · {habit.streak} day streak</div>
+            </div>
+            {[{label:'Retire this habit',sub:`${habit.creatureName} will ascend peacefully.`,tone:'sage',action:()=>{setShowMenu(false);onRetire&&onRetire();}},{label:'Delete this habit',sub:'Erase it from the garden entirely.',tone:'rose',action:()=>{setShowMenu(false);onDelete&&onDelete();}}].map(row=>(
+              <button key={row.label} onClick={row.action} style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'14px 16px',marginBottom:6,border:0,background:row.tone==='rose'?'rgba(212,156,151,0.10)':'rgba(143,167,127,0.12)',borderRadius:16,cursor:'pointer',textAlign:'left'}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:15,fontWeight:500,color:'var(--ink)',letterSpacing:-0.1}}>{row.label}</div>
+                  <div style={{fontSize:12,color:'var(--ink-3)',marginTop:2}}>{row.sub}</div>
+                </div>
+              </button>
+            ))}
+            <button onClick={()=>setShowMenu(false)} style={{width:'100%',height:50,borderRadius:999,border:0,fontFamily:'var(--font-ui)',fontSize:15,fontWeight:500,cursor:'pointer',background:'var(--cream-100)',color:'var(--ink)',marginTop:8}}>Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ADD HABIT SCREEN
+// ═══════════════════════════════════════════════════════════════
+function AddHabitScreen({ onClose, onCreate, habitCount=0 }) {
+  const [step, setStep] = React.useState(0);
+  const [data, setData] = React.useState({ identity:'', name:'', cue:'', minimum:'', hue:HABIT_HUES.sage, creatureName:'', frequency:'daily' });
+
+  // 5-habit limit guard
+  if (habitCount >= 5) return (
+    <div style={{position:'absolute',inset:0,zIndex:60,background:'var(--bg)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:32,animation:'fadeIn 0.3s'}}>
+      <Mochi fixedStage="ascending" hue={HABIT_HUES.ochre} size={100}/>
+      <div style={{fontFamily:'var(--font-display)',fontSize:26,fontWeight:400,color:'var(--ink)',letterSpacing:-0.4,marginTop:20,marginBottom:8,textAlign:'center'}}>The island is full.</div>
+      <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:16,color:'var(--ink-3)',fontWeight:300,lineHeight:1.5,textAlign:'center',marginBottom:32,maxWidth:260}}>Up to 5 mochi can live here at once. Retire or tend an existing one before planting new.</div>
+      <button onClick={onClose} style={{width:'100%',maxWidth:280,height:52,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:'pointer'}}>Back to garden</button>
+    </div>
+  );
+
+  const steps=[
+    {key:'identity',title:'Who are you becoming?',sub:'Habits are votes for the kind of person you want to be.',prompt:'I want to become',placeholder:'a writer / someone who moves gently / well-rested',hint:'Start with the identity, not the outcome.'},
+    {key:'name',title:'What is the tiny practice?',sub:'The smallest action that points toward that identity.',prompt:'Each day I will',placeholder:'write three pages / walk after lunch',hint:'Specific. Repeatable. Boring is fine.'},
+    {key:'frequency',title:'How often?',sub:'Some habits need daily water, others weekly space.',prompt:null,placeholder:null,hint:'Weekly habits count each week you do them at least once.'},
+    {key:'cue',title:'When?',sub:'Anchor it to something that already happens.',prompt:'After',placeholder:'the kettle clicks / I close my laptop',hint:'Habit stacking: tie it to an existing rhythm.'},
+    {key:'minimum',title:'And on the hard days?',sub:"The two-minute version, for when you almost can't.",prompt:'At minimum I will',placeholder:'write one sentence / walk to the corner',hint:'A grain of rice still feeds the bird.'},
+    {key:'creature',title:'Name your mochi',sub:'A small soul will hatch when you keep this for three days.'},
+  ];
+  const cur=steps[step];
+  const canNext=cur.key==='creature'?data.creatureName.length>0:cur.key==='frequency'?true:(data[cur.key]||'').length>0;
+  const next=()=>{
+    if(step<steps.length-1){setStep(step+1);}
+    else{
+      const theme=inferTheme({name:data.name,identity:data.identity,response:data.name});
+      onCreate({...data,id:'new-'+Date.now(),response:data.name,reward:'becoming '+data.identity,time:'—',streak:0,longest:0,history:Array(30).fill(false),done:false,withered:false,theme:theme.theme,accessory:data.accessory||theme.accessory});
+    }
+  };
+  const palette=[{hue:HABIT_HUES.sage,name:'Sage'},{hue:HABIT_HUES.sky,name:'Sea'},{hue:HABIT_HUES.rose,name:'Rose'},{hue:HABIT_HUES.ochre,name:'Ochre'},{hue:HABIT_HUES.lavender,name:'Twilight'}];
+  const inferred=inferTheme({name:data.name,identity:data.identity,response:data.name});
+  const previewHabit={id:'preview',name:data.name||'a small practice',hue:data.hue,streak:3,theme:inferred.theme,accessory:inferred.accessory};
+  return (
+    <div style={{position:'absolute',inset:0,zIndex:60,background:'var(--bg)',display:'flex',flexDirection:'column',animation:'slideUp 0.3s ease-out'}}>
+      <div style={{padding:'54px 16px 8px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <button onClick={onClose} style={{width:36,height:36,borderRadius:999,background:'var(--card)',border:'0.5px solid var(--line-strong)',color:'var(--ink-2)',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>{ICON.close()}</button>
+        <div style={{fontSize:12,fontWeight:600,color:'var(--ink-3)',letterSpacing:1.2,textTransform:'uppercase'}}>Plant a habit · {step+1} of {steps.length}</div>
+        <div style={{width:36}}/>
+      </div>
+      <div style={{padding:'6px 16px',display:'flex',gap:4,justifyContent:'center'}}>
+        {steps.map((_,i)=><div key={i} style={{width:i===step?22:6,height:6,borderRadius:999,background:i<=step?'var(--accent)':'var(--cream-200)',transition:'all 0.3s'}}/>)}
+      </div>
+      <div className="scroll-hide" style={{flex:1,overflow:'auto',padding:'24px 22px 120px'}}>
+        <H1 style={{fontSize:28,marginBottom:8}}>{cur.title}</H1>
+        <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:16,color:'var(--ink-2)',fontWeight:300,lineHeight:1.4,marginBottom:28}}>{cur.sub}</div>
+        {cur.key==='frequency'?(
+          <div style={{display:'flex',flexDirection:'column',gap:14}}>
+            {[
+              {value:'daily',label:'Daily',icon:'🌊',desc:'Every day — builds the deepest groove.'},
+              {value:'weekly',label:'Weekly',icon:'🌿',desc:'Once a week — for practices that need more space.'}
+            ].map(opt=>(
+              <div key={opt.value} onClick={()=>setData({...data,frequency:opt.value})} style={{borderRadius:'var(--radius-card)',background:'var(--card)',border:`1.5px solid ${data.frequency===opt.value?'var(--accent)':'var(--line-strong)'}`,padding:20,cursor:'pointer',display:'flex',gap:14,alignItems:'center',boxShadow:'var(--shadow-soft)',transition:'border-color 0.2s'}}>
+                <span style={{fontSize:28}}>{opt.icon}</span>
+                <div>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:500,color:'var(--ink)',marginBottom:4}}>{opt.label}</div>
+                  <div style={{fontSize:13,color:'var(--ink-3)',lineHeight:1.4}}>{opt.desc}</div>
+                </div>
+                {data.frequency===opt.value&&<div style={{marginLeft:'auto',width:20,height:20,borderRadius:999,background:'var(--accent)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><path d="M2 6l3 3 5-5"/></svg></div>}
+              </div>
+            ))}
+          </div>
+        ):cur.key==='creature'?(
+          <div>
+            <div style={{borderRadius:24,background:`radial-gradient(circle at 50% 60%,${data.hue}33,transparent 70%),linear-gradient(180deg,var(--sky-100),var(--cream-100))`,marginBottom:14,position:'relative',overflow:'hidden',padding:4}}>
+              <HabitScene habit={previewHabit} size={300}/>
+            </div>
+            <div style={{fontFamily:'var(--font-display)',fontSize:18,color:'var(--ink-3)',marginBottom:8,fontWeight:300}}>Its name is…</div>
+            <input type="text" autoFocus value={data.creatureName} onChange={e=>setData({...data,creatureName:e.target.value})} placeholder="Sumi, Aoi, Kaze…" style={{width:'100%',padding:'14px 0',border:0,borderBottom:'1.5px solid var(--ink-3)',background:'transparent',outline:'none',fontFamily:'var(--font-display)',fontSize:24,color:'var(--ink)',letterSpacing:-0.3}}/>
+            <div style={{marginTop:28,fontSize:11,fontWeight:700,color:'var(--ink-3)',letterSpacing:1.2,textTransform:'uppercase'}}>Hue</div>
+            <div style={{marginTop:12,display:'flex',gap:12}}>
+              {palette.map(p=><button key={p.hue} onClick={()=>setData({...data,hue:p.hue})} style={{width:44,height:44,borderRadius:999,border:0,background:p.hue,boxShadow:data.hue===p.hue?`0 0 0 3px var(--bg),0 0 0 5px ${p.hue}`:'0 1px 3px rgba(0,0,0,0.1)',cursor:'pointer',transition:'all 0.2s'}}/>)}
+            </div>
+          </div>
+        ):(
+          <>
+            <div style={{fontFamily:'var(--font-display)',fontSize:22,color:'var(--ink-3)',marginBottom:8,fontWeight:300}}>{cur.prompt}…</div>
+            <input type="text" autoFocus value={data[cur.key]||''} onChange={e=>setData({...data,[cur.key]:e.target.value})} onKeyDown={e=>e.key==='Enter'&&canNext&&next()} placeholder={cur.placeholder} style={{width:'100%',padding:'14px 0',border:0,borderBottom:'1.5px solid var(--ink-3)',background:'transparent',outline:'none',fontFamily:'var(--font-display)',fontSize:24,color:'var(--ink)',fontWeight:400,letterSpacing:-0.3}}/>
+            <div style={{fontSize:12,color:'var(--ink-4)',marginTop:12,fontStyle:'italic'}}>{cur.hint}</div>
+            {step>0&&(
+              <div style={{marginTop:36,padding:16,borderRadius:18,background:'var(--cream-50)'}}>
+                <div style={{fontSize:10,fontWeight:700,color:'var(--ink-3)',letterSpacing:1.2,textTransform:'uppercase',marginBottom:8}}>Your habit so far</div>
+                <div style={{fontFamily:'var(--font-display)',fontSize:15,fontStyle:'italic',color:'var(--ink-2)',lineHeight:1.5}}>
+                  I want to become <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.identity||'—'}</span>.
+                  {step>=2&&<> After <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.cue||'—'}</span>,</>} I will <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.name||'—'}</span>.
+                  {step>=3&&<> At minimum, <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.minimum||'—'}</span>.</>}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      <div style={{position:'absolute',bottom:0,left:0,right:0,padding:'12px 16px 32px',background:'linear-gradient(180deg,transparent,var(--bg) 30%)'}}>
+        <button onClick={next} disabled={!canNext} style={{width:'100%',height:56,borderRadius:999,border:0,background:canNext?'var(--ink)':'var(--cream-200)',color:canNext?'var(--cream-50)':'var(--ink-4)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:canNext?'pointer':'not-allowed',boxShadow:canNext?'0 8px 24px rgba(46,58,58,0.18)':'none',transition:'all 0.2s'}}>
+          {step===steps.length-1?'Set it adrift':'Continue'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHECK-IN OVERLAY
+// ═══════════════════════════════════════════════════════════════
+function CheckInOverlay({ habit, onClose }) {
+  const [phase, setPhase] = React.useState(0);
+  React.useEffect(()=>{
+    const t1=setTimeout(()=>setPhase(1),400);
+    const t2=setTimeout(()=>setPhase(2),1200);
+    return()=>{clearTimeout(t1);clearTimeout(t2);};
+  },[]);
+  if(!habit)return null;
+  const newStreak=habit.streak+1;
+  const oldStage=stageFromStreak(habit.streak);
+  const newStage=stageFromStreak(newStreak);
+  const evolved=oldStage!==newStage;
+  const graduated=newStage==='transformed';
+  return (
+    <div style={{position:'absolute',inset:0,zIndex:70,background:'linear-gradient(180deg,#DCEAF1,#F7F2E5)',display:'flex',flexDirection:'column',animation:'fadeIn 0.3s'}}>
+      <style>{`@keyframes rise{0%{transform:translateY(0);}100%{transform:translateY(-80px);}}@keyframes particle{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-200px) scale(0);opacity:0;}}`}</style>
+      <div style={{position:'absolute',inset:0}}><Sky mood="day" height={520}/><div style={{position:'absolute',bottom:0,left:0,right:0}}><Sea height={140} vitality={0.9} mood="day"/></div></div>
+      <div style={{position:'absolute',left:'50%',top:'32%',transform:'translateX(-50%)',animation:phase>=1?'rise 1.5s ease-out forwards':'bob 3s ease-in-out infinite',transition:'all 0.5s'}}>
+        <Mochi streak={newStreak} hue={habit.hue} accessory={habit.accessory} size={180}/>
+        {phase>=1&&Array.from({length:8}).map((_,i)=><div key={i} style={{position:'absolute',left:`${50+(i-4)*12}%`,top:'40%',width:4+(i%3),height:4+(i%3),borderRadius:'50%',background:['#F8F4E6','#FFFBE8',habit.hue][i%3],opacity:0.8,animation:`particle ${1.5+(i%3)*0.3}s ease-out forwards ${i*0.08}s`}}/>)}
+      </div>
+      <div style={{position:'absolute',left:22,right:22,bottom:120,textAlign:'center',opacity:phase>=2?1:0,transition:'opacity 0.6s'}}>
+        <div style={{fontFamily:'var(--font-ui)',fontSize:11,fontWeight:700,color:graduated?'var(--ochre-400)':'var(--ink-3)',letterSpacing:1.6,textTransform:'uppercase'}}>{graduated?'✦ Transformed':'A new stage'}{!evolved&&!graduated&&'Day kept'}</div>
+        <H1 style={{marginTop:8,fontSize:graduated?30:34}}>{graduated?`${habit.creatureName} has become.`:evolved?`${habit.creatureName} is awakening.`:`Day ${newStreak} for ${habit.creatureName}.`}</H1>
+        <div style={{marginTop:14,fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:17,color:'var(--ink-2)',fontWeight:300,lineHeight:1.4,maxWidth:280,margin:'14px auto 0'}}>
+          {graduated?'90 days. A small act became part of who you are. This is what transformation feels like.':evolved?'A small soul is becoming. Keep tending the shore.':'The kettle clicks. The page fills. The sea rises by an inch.'}
+        </div>
+      </div>
+      <button onClick={onClose} style={{position:'absolute',bottom:50,left:16,right:16,height:56,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:'pointer',boxShadow:'0 8px 24px rgba(46,58,58,0.2)',opacity:phase>=2?1:0,transition:'opacity 0.4s'}}>Carry on</button>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TWEAKS PANEL (minimal inline version)
+// ═══════════════════════════════════════════════════════════════
+function TweakSection({ label, children }) {
+  return <><div className="twk-sect">{label}</div>{children}</>;
+}
+function TweakRow({ label, value, children }) {
+  return <div className="twk-row"><div className="twk-lbl"><span>{label}</span>{value!=null&&<span className="twk-val">{value}</span>}</div>{children}</div>;
+}
+function TweakRadio({ label, value, options, onChange }) {
+  const opts=options.map(o=>typeof o==='object'?o:{value:o,label:o});
+  const idx=Math.max(0,opts.findIndex(o=>o.value===value));
+  const n=opts.length;
+  return (
+    <TweakRow label={label}>
+      <div style={{position:'relative',display:'flex',padding:2,borderRadius:8,background:'rgba(0,0,0,.06)',userSelect:'none'}}>
+        <div style={{position:'absolute',top:2,bottom:2,borderRadius:6,background:'rgba(255,255,255,.9)',boxShadow:'0 1px 2px rgba(0,0,0,.12)',transition:'left .15s,width .15s',left:`calc(2px + ${idx} * (100% - 4px) / ${n})`,width:`calc((100% - 4px) / ${n})`}}/>
+        {opts.map(o=><button key={o.value} type="button" onClick={()=>onChange(o.value)} style={{flex:1,border:0,background:'transparent',color:'inherit',font:'inherit',fontWeight:500,minHeight:22,borderRadius:6,cursor:'default',padding:'4px 6px',lineHeight:1.2,position:'relative',zIndex:1}}>{o.label}</button>)}
+      </div>
+    </TweakRow>
+  );
+}
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value?'1':'0'} onClick={()=>onChange(!value)}><i/></button>
+    </div>
+  );
+}
+function TweakButton({ label, onClick }) {
+  return <button type="button" className="twk-btn" onClick={onClick}>{label}</button>;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// iOS DEVICE FRAME
+// ═══════════════════════════════════════════════════════════════
+function IOSDevice({ children, width=402, height=874 }) {
+  const now=new Date();
+  const time=`${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  return (
+    <div style={{width,height,borderRadius:48,overflow:'hidden',position:'relative',background:'#F2F2F7',boxShadow:'0 40px 80px rgba(0,0,0,0.18),0 0 0 1px rgba(0,0,0,0.12)',fontFamily:'-apple-system,system-ui,sans-serif',WebkitFontSmoothing:'antialiased'}}>
+      <div style={{position:'absolute',top:11,left:'50%',transform:'translateX(-50%)',width:126,height:37,borderRadius:24,background:'#000',zIndex:50}}/>
+      <div style={{position:'absolute',top:0,left:0,right:0,zIndex:10}}>
+        <div style={{display:'flex',gap:154,alignItems:'center',justifyContent:'center',padding:'21px 24px 19px',boxSizing:'border-box',position:'relative',zIndex:20,width:'100%'}}>
+          <div style={{flex:1,height:22,display:'flex',alignItems:'center',justifyContent:'center',paddingTop:1.5}}>
+            <span style={{fontFamily:'-apple-system,"SF Pro",system-ui',fontWeight:590,fontSize:17,lineHeight:'22px',color:'#000'}}>{time}</span>
+          </div>
+          <div style={{flex:1,height:22,display:'flex',alignItems:'center',justifyContent:'center',gap:7,paddingTop:1}}>
+            <svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill="#000"/><rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill="#000"/><rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill="#000"/><rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill="#000"/></svg>
+            <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke="#000" strokeOpacity="0.35" fill="none"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#000"/><path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill="#000" fillOpacity="0.4"/></svg>
+          </div>
+        </div>
+      </div>
+      <div style={{height:'100%',display:'flex',flexDirection:'column'}}>
+        <div style={{flex:1,overflow:'auto'}}>{children}</div>
+      </div>
+      <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:60,height:34,display:'flex',justifyContent:'center',alignItems:'flex-end',paddingBottom:8,pointerEvents:'none'}}>
+        <div style={{width:139,height:5,borderRadius:100,background:'rgba(0,0,0,0.25)'}}/>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════════════════════
+const GOAL_OPTIONS = [
+  { id:'morning',  icon:'🌅', label:'Morning routine',     desc:'Start the day with intention' },
+  { id:'health',   icon:'🌿', label:'Health & movement',   desc:'Body, breath, and rest' },
+  { id:'creative', icon:'✍️', label:'Creative practice',   desc:'Writing, drawing, making' },
+  { id:'mind',     icon:'🧘', label:'Calm & mindfulness',  desc:'Meditation, reflection, stillness' },
+  { id:'learn',    icon:'📖', label:'Learning & growth',   desc:'Reading, studying, skills' },
+  { id:'social',   icon:'🌊', label:'Connection',          desc:'Relationships, presence, giving' },
+];
+
+function OnboardingScreen({ onComplete }) {
+  // steps: 0=welcome, 1=name, 2=goals, 3=start
+  const [step, setStep] = React.useState(0);
+  const [name, setName] = React.useState('');
+  const [goals, setGoals] = React.useState([]);
+  const canContinueName = name.trim().length > 0;
+  const toggleGoal = (id) => setGoals(g => g.includes(id) ? g.filter(x=>x!==id) : [...g, id]);
+
+  const handleStart = (fresh) => onComplete(name.trim(), fresh, goals);
+
+  // ── Step 0 — Welcome ─────────────────────────────────────────
+  if (step === 0) return (
+    <div style={{position:'absolute',inset:0,background:'linear-gradient(180deg,var(--sky-100) 0%,var(--cream-100) 55%)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px 28px',animation:'fadeIn 0.6s ease-out'}}>
+      <div style={{marginBottom:24,animation:'bob 4s ease-in-out infinite'}}>
+        <Mochi fixedStage="ascending" hue={HABIT_HUES.sage} accessory="star" size={140}/>
+      </div>
+      <div style={{fontFamily:'var(--font-display)',fontSize:36,fontWeight:400,color:'var(--ink)',letterSpacing:-0.8,textAlign:'center',lineHeight:1.1,marginBottom:10}}>Meet Mochi.</div>
+      <div style={{fontFamily:'var(--font-display)',fontSize:18,fontStyle:'italic',color:'var(--ink-2)',fontWeight:300,textAlign:'center',lineHeight:1.5,marginBottom:16,maxWidth:280}}>A gentle companion for the small habits that shape a life.</div>
+      {/* Lifecycle preview */}
+      <div style={{display:'flex',gap:6,alignItems:'flex-end',marginBottom:32,padding:'14px 18px',background:'rgba(255,255,255,0.6)',borderRadius:20,backdropFilter:'blur(8px)'}}>
+        {['seed','hatchling','toddler','grown','ascending'].map((s,i)=>(
+          <div key={s} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+            <Mochi fixedStage={s} hue={HABIT_HUES.sage} size={28+i*6}/>
+            <div style={{fontSize:8,color:'var(--ink-4)',letterSpacing:0.3,textTransform:'uppercase',fontWeight:600}}>{[0,3,7,14,30][i]}d</div>
+          </div>
+        ))}
+        <div style={{marginLeft:4,display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+          <span style={{fontSize:16}}>✦</span>
+          <div style={{fontSize:8,color:'var(--ink-4)',letterSpacing:0.3,textTransform:'uppercase',fontWeight:600}}>90d</div>
+        </div>
+      </div>
+      <button onClick={()=>setStep(1)} style={{width:'100%',maxWidth:300,height:58,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:17,fontWeight:500,cursor:'pointer',boxShadow:'0 8px 28px rgba(46,58,58,0.22)',letterSpacing:0.1}}>Begin →</button>
+      <div style={{marginTop:16,fontFamily:'var(--font-display)',fontSize:13,color:'var(--ink-4)',fontStyle:'italic'}}>No account needed · lives on your device.</div>
+    </div>
+  );
+
+  // ── Step 1 — Name ────────────────────────────────────────────
+  if (step === 1) return (
+    <div style={{position:'absolute',inset:0,background:'var(--bg)',display:'flex',flexDirection:'column',padding:'80px 28px 48px',animation:'slideUp 0.35s ease-out'}}>
+      <div style={{marginBottom:32,display:'flex',justifyContent:'center'}}>
+        <Mochi fixedStage="hatchling" hue={HABIT_HUES.sage} size={80}/>
+      </div>
+      <div style={{fontFamily:'var(--font-display)',fontSize:30,fontWeight:400,color:'var(--ink)',letterSpacing:-0.5,marginBottom:8}}>What shall I call you?</div>
+      <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:16,color:'var(--ink-3)',fontWeight:300,marginBottom:36,lineHeight:1.5}}>Your mochi will greet you by name each day.{name && <span style={{color:'var(--ink-2)'}}> {getNameKanji(name)}</span>}</div>
+      <input autoFocus type="text" value={name} onChange={e=>setName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&canContinueName&&setStep(2)} placeholder="Yuki, Sam, Rin…" style={{width:'100%',padding:'14px 0',border:0,borderBottom:'1.5px solid var(--ink-3)',background:'transparent',outline:'none',fontFamily:'var(--font-display)',fontSize:26,color:'var(--ink)',fontWeight:400,letterSpacing:-0.3,marginBottom:12}}/>
+      <div style={{fontSize:12,color:'var(--ink-4)',fontStyle:'italic',marginBottom:'auto'}}>Stays on your device only.</div>
+      <button onClick={()=>setStep(2)} disabled={!canContinueName} style={{width:'100%',height:56,borderRadius:999,border:0,background:canContinueName?'var(--ink)':'var(--cream-200)',color:canContinueName?'var(--cream-50)':'var(--ink-4)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:canContinueName?'pointer':'not-allowed',boxShadow:canContinueName?'0 8px 24px rgba(46,58,58,0.18)':'none',transition:'all 0.2s'}}>Continue</button>
+    </div>
+  );
+
+  // ── Step 2 — Goals survey ────────────────────────────────────
+  if (step === 2) return (
+    <div style={{position:'absolute',inset:0,background:'var(--bg)',display:'flex',flexDirection:'column',animation:'slideUp 0.35s ease-out'}}>
+      <div style={{padding:'64px 24px 16px'}}>
+        <div style={{fontFamily:'var(--font-display)',fontSize:28,fontWeight:400,color:'var(--ink)',letterSpacing:-0.5,marginBottom:6}}>What draws you here?</div>
+        <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:15,color:'var(--ink-3)',fontWeight:300,lineHeight:1.5}}>Pick any that feel true — this helps Mochi tend to you.</div>
+      </div>
+      <div className="scroll-hide" style={{flex:1,overflow:'auto',padding:'4px 24px 120px'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+          {GOAL_OPTIONS.map(g=>{
+            const sel = goals.includes(g.id);
+            return (
+              <div key={g.id} onClick={()=>toggleGoal(g.id)} style={{borderRadius:18,background:'var(--card)',border:`1.5px solid ${sel?'var(--accent)':'var(--line-strong)'}`,padding:'14px 12px',cursor:'pointer',transition:'border-color 0.2s',boxShadow:'var(--shadow-soft)',position:'relative'}}>
+                {sel && <div style={{position:'absolute',top:8,right:8,width:16,height:16,borderRadius:999,background:'var(--accent)',display:'flex',alignItems:'center',justifyContent:'center'}}><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><path d="M2 5l2.5 2.5 4-4"/></svg></div>}
+                <div style={{fontSize:22,marginBottom:6}}>{g.icon}</div>
+                <div style={{fontFamily:'var(--font-display)',fontSize:14,fontWeight:500,color:'var(--ink)',marginBottom:2}}>{g.label}</div>
+                <div style={{fontSize:11,color:'var(--ink-4)',lineHeight:1.3}}>{g.desc}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div style={{position:'absolute',bottom:0,left:0,right:0,padding:'12px 24px 40px',background:'linear-gradient(180deg,transparent,var(--bg) 30%)'}}>
+        <button onClick={()=>setStep(3)} style={{width:'100%',height:56,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:'pointer',boxShadow:'0 8px 24px rgba(46,58,58,0.18)'}}>
+          {goals.length > 0 ? `Continue with ${goals.length} goal${goals.length>1?'s':''}` : 'Continue →'}
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── Step 3 — Start choice ────────────────────────────────────
+  return (
+    <div style={{position:'absolute',inset:0,background:'var(--bg)',display:'flex',flexDirection:'column',padding:'72px 24px 48px',animation:'slideUp 0.35s ease-out'}}>
+      <div style={{fontFamily:'var(--font-display)',fontSize:28,fontWeight:400,color:'var(--ink)',letterSpacing:-0.5,marginBottom:4}}>
+        Welcome, {name}<span style={{fontSize:18,color:'var(--ink-4)',marginLeft:4}}>{getNameKanji(name)}</span>.
+      </div>
+      <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:16,color:'var(--ink-3)',fontWeight:300,marginBottom:32,lineHeight:1.5}}>Would you like to explore with example habits, or begin fresh?</div>
+      <div onClick={()=>handleStart(false)} style={{borderRadius:'var(--radius-card)',background:'var(--card)',border:'1.5px solid var(--accent)',boxShadow:'var(--shadow-card)',padding:20,marginBottom:12,cursor:'pointer',display:'flex',gap:14,alignItems:'center'}}>
+        <div style={{display:'flex',gap:4}}>{[HABIT_HUES.sage,HABIT_HUES.sky,HABIT_HUES.rose].map(hue=><Mochi key={hue} fixedStage="toddler" hue={hue} size={42}/>)}</div>
+        <div>
+          <div style={{fontFamily:'var(--font-display)',fontSize:17,fontWeight:500,color:'var(--ink)',marginBottom:3}}>Try the demo</div>
+          <div style={{fontSize:12,color:'var(--ink-3)',lineHeight:1.4}}>Five example habits and mochi to explore the app.</div>
+        </div>
+      </div>
+      <div onClick={()=>handleStart(true)} style={{borderRadius:'var(--radius-card)',background:'var(--card)',border:'0.5px solid var(--line-strong)',boxShadow:'var(--shadow-soft)',padding:20,cursor:'pointer',display:'flex',gap:14,alignItems:'center'}}>
+        <div style={{width:42,height:42,display:'flex',alignItems:'center',justifyContent:'center'}}><Mochi fixedStage="seed" hue={HABIT_HUES.ochre} size={42}/></div>
+        <div>
+          <div style={{fontFamily:'var(--font-display)',fontSize:17,fontWeight:500,color:'var(--ink)',marginBottom:3}}>Start fresh</div>
+          <div style={{fontSize:12,color:'var(--ink-3)',lineHeight:1.4}}>Plant your first habit and watch it grow.</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// APP ROOT
+// ═══════════════════════════════════════════════════════════════
+function App() {
+  const [tweaks, setTweak] = useTweaks({ palette:'watercolor', mood:'day', animations:true });
+
+  // ── Persistent state ──────────────────────────────────────────
+  const [onboarded, setOnboarded] = React.useState(()=>!!localStorage.getItem('mochi_onboarded'));
+  const [userName, setUserName] = React.useState(()=>localStorage.getItem('mochi_name')||'');
+  const [habits, setHabits] = React.useState(()=>{
+    try {
+      const s = localStorage.getItem('mochi_habits');
+      if (!s) return INITIAL_HABITS;
+      // Migrate: add frequency:'daily' to any habit missing it
+      return JSON.parse(s).map(h => h.frequency ? h : {...h, frequency:'daily'});
+    } catch { return INITIAL_HABITS; }
+  });
+  React.useEffect(()=>{ try{localStorage.setItem('mochi_habits',JSON.stringify(habits));}catch{} },[habits]);
+
+  const [route, setRoute] = React.useState({ tab:'today' });
+  const [overlay, setOverlay] = React.useState(null);
+
+  React.useEffect(()=>{
+    document.documentElement.dataset.palette = tweaks.palette==='twilight'?'twilight':tweaks.palette==='dawn'?'dawn':'';
+  },[tweaks.palette]);
+
+  // Derive greeting from time
+  const greeting = (() => {
+    if (tweaks.mood === 'dawn') return 'Soft dawn';
+    if (tweaks.mood === 'dusk') return 'Soft dusk';
+    if (tweaks.mood === 'night') return 'Quiet night';
+    const h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 17) return 'Good afternoon';
+    return 'Good evening';
+  })();
+
+  const openHabit=(id)=>setOverlay({type:'detail',habitId:id});
+  const closeOverlay=()=>setOverlay(null);
+
+  const complete=(id)=>{
+    const h=habits.find(x=>x.id===id);
+    if(!h||h.done)return;
+    setOverlay({type:'checkin',habitId:id});
+    setHabits(habits.map(x=>x.id===id?{...x,done:true,streak:x.streak+1,longest:Math.max(x.longest,x.streak+1),withered:false,history:[...x.history.slice(1),true]}:x));
+  };
+  const addHabit=(h)=>{setHabits([...habits,h]);closeOverlay();};
+  const retire=(id)=>{setHabits(habits.filter(x=>x.id!==id));closeOverlay();};
+  const remove=(id)=>{setHabits(habits.filter(x=>x.id!==id));closeOverlay();};
+
+  const detailHabit=overlay&&overlay.type==='detail'?habits.find(h=>h.id===overlay.habitId):null;
+  const checkinHabit=overlay&&overlay.type==='checkin'?habits.find(h=>h.id===overlay.habitId):null;
+
+  // Tweaks panel open state
+  const [tweaksOpen, setTweaksOpen] = React.useState(false);
+
+  // ── Onboarding gate ──────────────────────────────────────────
+  if (!onboarded) return (
+    <OnboardingScreen onComplete={(n, fresh, goals)=>{
+      const nm = n||'';
+      setUserName(nm);
+      try {
+        localStorage.setItem('mochi_name', nm);
+        localStorage.setItem('mochi_onboarded','1');
+        if (goals && goals.length) localStorage.setItem('mochi_goals', JSON.stringify(goals));
+      } catch{}
+      if (fresh) setHabits([]);
+      else setHabits(INITIAL_HABITS); // "Try the demo" always loads fresh examples
+      setOnboarded(true);
+    }}/>
+  );
+
+  return (
+    <div className={tweaks.animations?'':'no-anim'} style={{position:'absolute',inset:0,overflow:'hidden',background:'var(--bg)'}}>
+      {route.tab==='today'&&!overlay&&<TodayScreen habits={habits} onOpenHabit={openHabit} onComplete={complete} onAdd={()=>setOverlay({type:'add'})} mood={tweaks.mood} greeting={greeting} userName={userName}/>}
+      {route.tab==='garden'&&!overlay&&<GardenScreen habits={habits} onOpenHabit={openHabit} mood={tweaks.mood}/>}
+      {route.tab==='insights'&&!overlay&&<InsightsScreen habits={habits} userName={userName}/>}
+      {route.tab==='coach'&&!overlay&&<CoachScreen habits={habits} mood={tweaks.mood}/>}
+
+      {(route.tab==='today'||route.tab==='garden')&&!overlay&&(
+        <button onClick={()=>setOverlay({type:'add'})} title={habits.length>=5?'5 habit limit reached':''} style={{position:'absolute',right:18,bottom:96,zIndex:25,width:54,height:54,borderRadius:999,border:0,background:habits.length>=5?'var(--ink-4)':'var(--ink)',color:'var(--cream-50)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',boxShadow:'0 8px 24px rgba(46,58,58,0.28)',opacity:habits.length>=5?0.5:1}}>{ICON.plus()}</button>
+      )}
+
+      {!overlay&&<BottomTabBar active={route.tab} onChange={tab=>setRoute({tab})}/>}
+
+      {/* Tweaks button */}
+      {!overlay&&(
+        <button onClick={()=>setTweaksOpen(!tweaksOpen)} style={{position:'absolute',top:54,right:14,zIndex:40,width:44,height:44,borderRadius:999,border:0,background:'rgba(255,255,255,0.75)',backdropFilter:'blur(10px)',boxShadow:'0 1px 3px rgba(46,58,58,0.12)',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--ink-3)'}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="2.5"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      )}
+
+      {/* Tweaks panel */}
+      {tweaksOpen&&!overlay&&(
+        <div style={{position:'absolute',top:100,right:12,zIndex:200,width:240,background:'rgba(250,249,247,0.92)',backdropFilter:'blur(20px)',borderRadius:14,border:'0.5px solid rgba(255,255,255,0.6)',boxShadow:'0 12px 40px rgba(0,0,0,0.18)',padding:'12px 14px 14px',fontFamily:'var(--font-ui)',fontSize:12}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+            <span style={{fontWeight:600,fontSize:12,letterSpacing:0.1,color:'#29261b'}}>Tweaks</span>
+            <button onClick={()=>setTweaksOpen(false)} style={{appearance:'none',border:0,background:'transparent',color:'rgba(41,38,27,0.55)',width:22,height:22,borderRadius:6,cursor:'default',fontSize:13,lineHeight:1}}>✕</button>
+          </div>
+          <TweakSection label="Mood">
+            <TweakRadio label="Sky" value={tweaks.mood} onChange={v=>setTweak('mood',v)} options={[{value:'dawn',label:'Dawn'},{value:'day',label:'Day'},{value:'dusk',label:'Dusk'},{value:'night',label:'Night'}]}/>
+            <TweakRadio label="Palette" value={tweaks.palette} onChange={v=>setTweak('palette',v)} options={[{value:'watercolor',label:'Sea'},{value:'twilight',label:'Twilight'},{value:'dawn',label:'Forest'}]}/>
+          </TweakSection>
+          <TweakSection label="Motion">
+            <TweakToggle label="Animations" value={tweaks.animations} onChange={v=>setTweak('animations',v)}/>
+          </TweakSection>
+          <TweakSection label="Actions">
+            <TweakButton label="Plant a habit" onClick={()=>{setTweaksOpen(false);setOverlay({type:'add'});}}/>
+            <div style={{height:4}}/>
+            <TweakButton label="Reset habits" onClick={()=>{setHabits(INITIAL_HABITS);try{localStorage.setItem('mochi_habits',JSON.stringify(INITIAL_HABITS));}catch{} setOverlay(null);setTweaksOpen(false);}}/>
+            <div style={{height:4}}/>
+            <TweakButton label="Reset onboarding" onClick={()=>{try{localStorage.removeItem('mochi_onboarded');localStorage.removeItem('mochi_name');}catch{} setOnboarded(false);setUserName('');setTweaksOpen(false);}}/>
+          </TweakSection>
+        </div>
+      )}
+
+      {/* Overlays */}
+      {overlay&&overlay.type==='detail'&&detailHabit&&(
+        <div style={{position:'absolute',inset:0,zIndex:50,background:'var(--bg)',animation:'slideLeft 0.3s ease-out'}}>
+          <DetailScreen habit={detailHabit} onBack={closeOverlay} onComplete={()=>{closeOverlay();complete(detailHabit.id);}} onRetire={()=>retire(detailHabit.id)} onDelete={()=>remove(detailHabit.id)} mood={tweaks.mood}/>
+        </div>
+      )}
+      {overlay&&overlay.type==='add'&&<AddHabitScreen onClose={closeOverlay} onCreate={addHabit} habitCount={habits.length}/>}
+      {overlay&&overlay.type==='checkin'&&checkinHabit&&<CheckInOverlay habit={{...checkinHabit,streak:checkinHabit.streak-1}} onClose={closeOverlay}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOUNT
+// ═══════════════════════════════════════════════════════════════
+function Mount() {
+  // On a real iOS/Android device, fill the screen natively; desktop shows the iPhone frame
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    return (
+      <div style={{width:'100vw',height:'100dvh',position:'relative',overflow:'hidden',background:'var(--bg)',WebkitFontSmoothing:'antialiased'}}>
+        <App/>
+      </div>
+    );
+  }
+  return (
+    <IOSDevice width={402} height={874}>
+      <App/>
+    </IOSDevice>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Mount/>);
+</script>
+</body>
+</html>
