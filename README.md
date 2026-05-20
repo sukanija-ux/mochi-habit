@@ -1,128 +1,135 @@
-# Mochi — A gentle habit coach
+<div align="center">
 
-A Ghibli-inspired habit tracker. Habits grow as mochi creatures on a small island.
+# 🌊 Mochi
+
+**A gentle, Ghibli-inspired habit tracker where your habits grow as living creatures.**
+
+[![Live demo](https://img.shields.io/badge/Live%20demo-sukanija--ux.github.io-8FA77F?style=flat-square)](https://sukanija-ux.github.io/mochi-habit/)
+[![iOS](https://img.shields.io/badge/iOS-16%2B-black?style=flat-square&logo=apple)](ios/)
+[![License](https://img.shields.io/badge/license-MIT-B8A4C4?style=flat-square)](LICENSE)
+
+</div>
 
 ---
 
-## Part 1 — Push to GitHub (5 min)
+## What is it?
 
-### 1. Create the repository
-1. Open [github.com/new](https://github.com/new)
-2. Repository name: `mochi-habit`
-3. Set to **Public** (required for free GitHub Pages)
-4. Click **Create repository** — do NOT add a README
+Mochi is a habit tracker built around one idea from *Atomic Habits*: **identity over outcomes**. Instead of tracking streaks as numbers, each habit hatches a mochi creature that grows, drifts, and eventually transforms as you tend it over 90 days.
 
-### 2. Push from your Mac
-Copy the two commands GitHub shows you after creating the repo. They look like:
+| Today | Garden | Insights | Coach |
+|---|---|---|---|
+| Island scene with your mochi floating in the sea | Village panorama with all creatures | Weekly bar chart, habit tips, friends leaderboard | AI-powered habit coach (Claude), template fallback offline |
+
+### Features
+
+- **5 mochi max** — the island only holds so many souls at once
+- **6 growth stages** — Seed → Hatchling → Growing → Awake → Ascending → ✦ Transformed (90 days)
+- **Daily or weekly habits** — not every practice needs every day
+- **Habit hints** — curated tips and book recommendations per habit theme
+- **Accountability circle** — friend-only leaderboard, no peer pressure
+- **Japanese name styling** — your name gets a kanji companion character
+- **Fully offline** — all data stays on device, no account needed
+- **Ghibli palette** — *Kiki's Delivery Service* + *The Boy and the Heron* inspired
+
+---
+
+## Tech
+
+| Layer | Stack |
+|---|---|
+| Web app | React 18 (Babel standalone, no build step) |
+| Styling | Pure CSS custom properties, Newsreader serif |
+| Storage | `localStorage` — no backend, no account |
+| AI coach | Cloudflare Worker → Anthropic Claude API |
+| iOS | SwiftUI `WKWebView` wrapper |
+| Hosting | GitHub Pages |
+
+The entire web app is a **single `index.html` file** — open it in any browser, drag it into Xcode, done.
+
+---
+
+## Run locally
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/mochi-habit.git
-git push -u origin main
+python3 -m http.server 3000
+# → open http://localhost:3000
 ```
-
-Run them in Terminal inside this folder (`/Users/sukanijathillainadarasan/python`).
-
-> The files are already staged and committed — just `git push`.
-
-### 3. Enable GitHub Pages (free web hosting)
-1. In your repo → **Settings** → **Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `main` / `/ (root)` → **Save**
-4. In 1–2 minutes your app is live at:
-   `https://YOUR_USERNAME.github.io/mochi-habit/`
 
 ---
 
-## Part 2 — iOS app on TestFlight (30–60 min)
+## Deploy to GitHub Pages
 
-### What you need
-- [Xcode](https://apps.apple.com/app/xcode/id497799835) — free, ~7 GB from the App Store
-- [Apple Developer account](https://developer.apple.com/enroll/) — $99/year (required for TestFlight)
+Push to `main` and enable Pages in repo settings (Source: `main` / `/ root`). Every push auto-deploys in ~60 seconds.
 
----
-
-### Step 1 — Install Xcode
-Download from the Mac App Store. Open it once to finish installation.
-
-### Step 2 — Create a new Xcode project
-1. Xcode → **File → New → Project**
-2. Choose **iOS → App** → Next
-3. Fill in:
-   - Product Name: `Mochi`
-   - Team: *(your Apple Developer team)*
-   - Organization Identifier: `com.yourname` (e.g. `com.sukani`)
-   - Bundle Identifier will become: `com.yourname.Mochi`
-   - Interface: **SwiftUI**
-   - Language: **Swift**
-4. Save to a folder (e.g. Desktop)
-
-### Step 3 — Replace the generated files
-Delete `ContentView.swift` from the project (move to trash).
-
-Then drag these files **into the Xcode project** (check ✅ "Copy items if needed"):
-```
-ios/Mochi/MochiApp.swift
-ios/Mochi/ContentView.swift
-```
-
-### Step 4 — Add the web app
-Drag `index.html` into the Xcode project:
-- Check ✅ "Copy items if needed"
-- Check ✅ "Add to target: Mochi"
-- Click Finish
-
-> This bundles the full app inside the iOS binary — works offline, no server needed.
-
-### Step 5 — Set deployment target
-1. Click the project name (top of the file tree) → **Mochi** target
-2. General tab → Minimum Deployments → **iOS 16.0**
-
-### Step 6 — Add the launch background colour (optional but clean)
-1. Click `Assets.xcassets`
-2. **+** → **New Color Set** → name it `LaunchBackground`
-3. Set the colour to `#F7F2E5` (the app's cream background)
-
-### Step 7 — Build and test on your iPhone
-1. Plug in your iPhone
-2. Select your device in the toolbar (top left of Xcode)
-3. ▶ Run — the app installs on your phone
-4. You may need to trust the developer certificate:  
-   iPhone → Settings → General → VPN & Device Management → trust your email
-
-### Step 8 — Archive for TestFlight
-1. Unplug your phone (or keep it connected — either works)
-2. In Xcode toolbar: select **Any iOS Device (arm64)** as destination
-3. **Product → Archive** — this builds the release version (~2 min)
-4. When the Organizer opens, click **Distribute App**
-5. Choose **App Store Connect** → Next → Upload → Next → Next → Upload
-
-### Step 9 — TestFlight
-1. Open [appstoreconnect.apple.com](https://appstoreconnect.apple.com)
-2. Your app will appear under **My Apps** (create it if first time)
-3. Go to **TestFlight** tab → **Internal Testing**
-4. Add yourself as a tester using your Apple ID
-5. Open **TestFlight** app on your iPhone → install Mochi
+**Live at:** `https://sukanija-ux.github.io/mochi-habit/`
 
 ---
 
-## Cloudflare Worker (optional — enables Claude AI in Coach tab)
+## iOS app (TestFlight)
 
-The Coach tab works with smart template responses without the worker.
-To enable full Claude AI:
+The `ios/` folder contains a SwiftUI wrapper that loads `index.html` from the app bundle — fully native, fully offline.
+
+**You need:**
+- [Xcode](https://apps.apple.com/app/xcode/id497799835) (free, Mac App Store, ~7 GB)
+- [Apple Developer account](https://developer.apple.com/enroll/) ($99/year — required for TestFlight)
+
+### Setup in Xcode
+
+```
+1.  File → New → Project → iOS → App
+    Product Name: Mochi
+    Interface: SwiftUI   Language: Swift
+
+2.  Delete the generated ContentView.swift
+
+3.  Drag in:
+      ios/Mochi/MochiApp.swift
+      ios/Mochi/ContentView.swift
+    ✅ Copy items if needed
+
+4.  Drag in: index.html
+    ✅ Copy items if needed
+    ✅ Add to target: Mochi
+
+5.  Project settings → General → Minimum Deployments → iOS 16.0
+
+6.  ▶ Run on your iPhone to test
+```
+
+### Upload to TestFlight
+
+```
+1.  Xcode toolbar → destination: Any iOS Device (arm64)
+2.  Product → Archive  (~2 min)
+3.  Organizer → Distribute App → App Store Connect → Upload
+4.  appstoreconnect.apple.com → TestFlight → add yourself as tester
+5.  Open TestFlight app on iPhone → install Mochi ✓
+```
+
+> **Updating:** when you change `index.html`, drag the new version into Xcode and re-archive. The GitHub Pages version updates automatically on push.
+
+---
+
+## Claude AI Coach (optional)
+
+The Coach tab works offline with smart template responses. To enable full Claude AI, deploy the included Cloudflare Worker:
 
 ```bash
 npm install -g wrangler
 wrangler login
-wrangler deploy          # deploys worker.js
-wrangler secret put ANTHROPIC_API_KEY   # paste your sk-ant-… key
+wrangler deploy
+wrangler secret put ANTHROPIC_API_KEY    # paste your sk-ant-… key
 ```
 
-Then paste the worker URL into `index.html`:
+Then set the worker URL in `index.html` (line 147):
+
 ```js
 const MOCHI_COACH_URL = 'https://mochi-coach.YOUR_SUBDOMAIN.workers.dev';
 ```
 
-Commit and push — GitHub Pages auto-updates. For the iOS app, drag the updated `index.html` back into Xcode and re-archive.
+Push → GitHub Pages updates automatically. Re-archive in Xcode for the iOS build.
+
+The worker enforces **habit-coaching only** — Mochi won't discuss anything outside streaks, motivation, and tending habits.
 
 ---
 
@@ -130,13 +137,34 @@ Commit and push — GitHub Pages auto-updates. For the iOS app, drag the updated
 
 ```
 mochi-habit/
-├── index.html          ← the entire web app (React, Babel, inline)
-├── worker.js           ← Cloudflare Worker proxy for Claude API
-├── wrangler.toml       ← Cloudflare deployment config
+├── index.html          ← entire web app (React + Babel, no build step)
+├── worker.js           ← Cloudflare Worker — Claude API proxy
+├── wrangler.toml       ← Cloudflare deploy config
 ├── ios/
 │   └── Mochi/
-│       ├── MochiApp.swift      ← @main entry point
+│       ├── MochiApp.swift      ← @main SwiftUI entry point
 │       ├── ContentView.swift   ← WKWebView wrapper
-│       └── Info.plist          ← iOS app config
+│       ├── Info.plist          ← iOS app configuration
+│       └── Assets.xcassets/    ← app icon placeholder
 └── README.md
 ```
+
+---
+
+## Roadmap
+
+- [ ] App icon (mochi creature, Ghibli palette)
+- [ ] Push notifications — stacked habit reminders
+- [ ] Sign in with Apple + iCloud sync
+- [ ] Friend invites for the accountability circle
+- [ ] Native SwiftUI rebuild for App Store submission
+- [ ] Mochi transformation animation at day 90
+
+---
+
+<div align="center">
+
+*"You do not rise to the level of your goals. You fall to the level of your systems."*
+— James Clear
+
+</div>
