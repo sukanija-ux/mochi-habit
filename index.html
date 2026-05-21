@@ -369,109 +369,119 @@ function Accessory({ kind, cx, cy, r, hue, withered }) {
   );
   return null;
 }
-// ── Per-theme ear / antenna shapes ──────────────────────────────
-function ThemeEars({ theme, cx, topY, r, hue, withered }) {
+// ── Per-theme held item props (rendered in front of body) ────────
+function HeldItem({ theme, cx, cy, r, hue, withered }) {
   if (!theme || theme === 'ambient') return null;
-  const fade = withered ? 0.5 : 1;
+  const fade = withered ? 0.38 : 0.92;
   const out = '#2E3A2A', base = '#F8F4E6';
 
   if (theme === 'read') {
-    // Tall bunny ears
-    const ex=r*0.30, ey=topY-r*0.52, ew=r*0.13, eh=r*0.42;
+    // Open book held at chest
+    const bw=r*0.48, bh=r*0.34, bx=cx-bw/2, by=cy+r*0.26;
     return (
       <g opacity={fade}>
-        <ellipse cx={cx-ex} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6"/>
-        <ellipse cx={cx-ex} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.38"/>
-        <ellipse cx={cx+ex} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6"/>
-        <ellipse cx={cx+ex} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.38"/>
+        <rect x={bx} y={by} width={bw*0.49} height={bh} rx={1.5} fill="#EDE8D8" stroke={out} strokeWidth="0.5"/>
+        <rect x={bx+bw*0.51} y={by} width={bw*0.49} height={bh} rx={1.5} fill={base} stroke={out} strokeWidth="0.5"/>
+        <line x1={bx+bw*0.5} y1={by} x2={bx+bw*0.5} y2={by+bh} stroke={hue} strokeWidth="1.6" opacity="0.85"/>
+        {[0.28,0.52,0.76].map((t,i)=>(
+          <g key={i}>
+            <line x1={bx+r*0.04} y1={by+bh*t} x2={bx+bw*0.44} y2={by+bh*t} stroke={out} strokeWidth="0.4" opacity="0.3"/>
+            <line x1={bx+bw*0.56} y1={by+bh*t} x2={bx+bw*0.96} y2={by+bh*t} stroke={out} strokeWidth="0.4" opacity="0.3"/>
+          </g>
+        ))}
       </g>
     );
   }
 
   if (theme === 'pages') {
-    // Cat ears — pointed triangles
-    const lx=cx-r*0.32, rx2=cx+r*0.32, ty=topY-r*0.38, by=topY+r*0.05, hw=r*0.24;
+    // Pencil held diagonally
+    const pw=r*0.1, ph=r*0.46, px=cx+r*0.34, py=cy+r*0.12, pcx=px+pw/2, pcy=py+ph/2;
     return (
-      <g opacity={fade}>
-        <path d={`M${lx-hw*0.4} ${by} L${lx} ${ty} L${lx+hw*0.6} ${by}Z`} fill={base} stroke={out} strokeWidth="0.5"/>
-        <path d={`M${lx-hw*0.18} ${by} L${lx} ${ty+r*0.13} L${lx+hw*0.38} ${by}Z`} fill={hue} opacity="0.30"/>
-        <path d={`M${rx2-hw*0.6} ${by} L${rx2} ${ty} L${rx2+hw*0.4} ${by}Z`} fill={base} stroke={out} strokeWidth="0.5"/>
-        <path d={`M${rx2-hw*0.38} ${by} L${rx2} ${ty+r*0.13} L${rx2+hw*0.18} ${by}Z`} fill={hue} opacity="0.30"/>
+      <g opacity={fade} transform={`rotate(-22 ${pcx} ${pcy})`}>
+        <rect x={px} y={py} width={pw} height={ph*0.78} rx={1.2} fill={hue} stroke={out} strokeWidth="0.5"/>
+        <path d={`M${px} ${py+ph*0.78} L${px+pw/2} ${py+ph} L${px+pw} ${py+ph*0.78}Z`} fill="#F4D8A0" stroke={out} strokeWidth="0.45"/>
+        <rect x={px+0.8} y={py+ph*0.72} width={pw-1.6} height={ph*0.08} fill="#D8B890"/>
+        <rect x={px} y={py} width={pw} height={ph*0.12} rx={1.2} fill="#F0B8B8" stroke={out} strokeWidth="0.4"/>
+        <line x1={px+pw/2} y1={py+ph*0.14} x2={px+pw/2} y2={py+ph*0.68} stroke="white" strokeWidth="0.5" opacity="0.4"/>
       </g>
     );
   }
 
   if (theme === 'walk') {
-    // Round bear ears
-    const ex=r*0.52, ey=topY, er=r*0.22;
+    // Running shoe viewed from side
+    const sx=cx-r*0.24, sy=cy+r*0.34, sw=r*0.52, sh=r*0.24;
     return (
       <g opacity={fade}>
-        <circle cx={cx-ex} cy={ey} r={er} fill={base} stroke={out} strokeWidth="0.6"/>
-        <circle cx={cx-ex} cy={ey} r={er*0.58} fill={hue} opacity="0.42"/>
-        <circle cx={cx+ex} cy={ey} r={er} fill={base} stroke={out} strokeWidth="0.6"/>
-        <circle cx={cx+ex} cy={ey} r={er*0.58} fill={hue} opacity="0.42"/>
+        <ellipse cx={sx+sw*0.5} cy={sy+sh+r*0.04} rx={sw*0.48} ry={r*0.06} fill={out} opacity="0.15"/>
+        <path d={`M${sx+sw*0.06} ${sy+sh} Q${sx} ${sy+sh*0.45} ${sx} ${sy+sh*0.18} Q${sx+sw*0.04} ${sy} ${sx+sw*0.38} ${sy} L${sx+sw*0.88} ${sy+sh*0.24} Q${sx+sw*1.04} ${sy+sh*0.58} ${sx+sw*0.94} ${sy+sh}Z`} fill={hue} stroke={out} strokeWidth="0.5"/>
+        <line x1={sx+sw*0.06} y1={sy+sh} x2={sx+sw*0.94} y2={sy+sh} stroke={out} strokeWidth="0.6" strokeLinecap="round" opacity="0.4"/>
+        <path d={`M${sx+sw*0.26} ${sy+sh*0.1} Q${sx+sw*0.3} ${sy-sh*0.05} ${sx+sw*0.54} ${sy+sh*0.1}`} stroke="white" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.55"/>
+        <line x1={sx+sw*0.28} y1={sy+sh*0.26} x2={sx+sw*0.56} y2={sy+sh*0.2} stroke="white" strokeWidth="0.8" opacity="0.5"/>
       </g>
     );
   }
 
   if (theme === 'sleep') {
-    // Droopy floppy ears — elongated ovals angled outward
-    const ew=r*0.13, eh=r*0.44, lx=cx-r*0.58, rx2=cx+r*0.58, ey=topY+r*0.18;
+    // Crescent moon drifting to the right
+    const mr=r*0.24, mx=cx+r*0.38, my=cy+r*0.22;
     return (
-      <g opacity={fade}>
-        <ellipse cx={lx} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6" transform={`rotate(-30 ${lx} ${ey})`}/>
-        <ellipse cx={lx} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.30" transform={`rotate(-30 ${lx} ${ey})`}/>
-        <ellipse cx={rx2} cy={ey} rx={ew} ry={eh} fill={base} stroke={out} strokeWidth="0.6" transform={`rotate(30 ${rx2} ${ey})`}/>
-        <ellipse cx={rx2} cy={ey} rx={ew*0.55} ry={eh*0.72} fill={hue} opacity="0.30" transform={`rotate(30 ${rx2} ${ey})`}/>
+      <g opacity={fade} style={{animation:'breathe 4s ease-in-out infinite'}}>
+        <path d={`M${mx-mr*0.2} ${my-mr} A${mr} ${mr} 0 1 0 ${mx-mr*0.2} ${my+mr} A${mr*0.66} ${mr*0.66} 0 1 1 ${mx-mr*0.2} ${my-mr}Z`} fill={hue} stroke={out} strokeWidth="0.5"/>
+        <circle cx={mx-r*0.18} cy={my-r*0.3} r={r*0.03} fill={hue} opacity="0.55"/>
+        <circle cx={mx+r*0.08} cy={my-r*0.38} r={r*0.022} fill={hue} opacity="0.4"/>
       </g>
     );
   }
 
   if (theme === 'stretch') {
-    // Leaf antennae
-    const ax=r*0.20, ay=topY-r*0.40, sy=topY+r*0.02;
+    // Rolled yoga mat resting at arm height
+    const mw=r*0.44, mh=r*0.15, mx=cx-mw/2, my=cy+r*0.42, er=mh*0.54;
     return (
       <g opacity={fade}>
-        <line x1={cx-ax} y1={sy} x2={cx-ax*1.15} y2={ay} stroke="#5E7A4A" strokeWidth="1.2" strokeLinecap="round"/>
-        <path d={`M${cx-ax*1.15} ${ay} Q${cx-ax*1.85} ${ay-r*0.26} ${cx-ax*0.95} ${ay-r*0.42} Q${cx-ax*0.45} ${ay-r*0.18} ${cx-ax*1.15} ${ay}Z`} fill="#7A9863" stroke="#5E7A4A" strokeWidth="0.5"/>
-        <line x1={cx+ax} y1={sy} x2={cx+ax*1.15} y2={ay} stroke="#5E7A4A" strokeWidth="1.2" strokeLinecap="round"/>
-        <path d={`M${cx+ax*1.15} ${ay} Q${cx+ax*1.85} ${ay-r*0.26} ${cx+ax*0.95} ${ay-r*0.42} Q${cx+ax*0.45} ${ay-r*0.18} ${cx+ax*1.15} ${ay}Z`} fill="#7A9863" stroke="#5E7A4A" strokeWidth="0.5"/>
+        <ellipse cx={mx+mw} cy={my+mh/2} rx={er} ry={mh/2} fill={hue} stroke={out} strokeWidth="0.4" opacity="0.72"/>
+        <rect x={mx} y={my} width={mw} height={mh} fill={hue} stroke={out} strokeWidth="0.5" opacity="0.9"/>
+        <ellipse cx={mx} cy={my+mh/2} rx={er} ry={mh/2} fill={hue} stroke={out} strokeWidth="0.5"/>
+        <line x1={mx+mw*0.28} y1={my} x2={mx+mw*0.28} y2={my+mh} stroke="white" strokeWidth="0.8" opacity="0.32"/>
+        <line x1={mx+mw*0.68} y1={my} x2={mx+mw*0.68} y2={my+mh} stroke="white" strokeWidth="0.8" opacity="0.32"/>
       </g>
     );
   }
 
   if (theme === 'tea') {
-    // Round top-knot nub — like a teapot lid knob
-    const nR=r*0.20;
+    // Teacup with steam + saucer
+    const tw=r*0.44, th=r*0.28, tx=cx-tw/2, ty=cy+r*0.28;
     return (
       <g opacity={fade}>
-        <ellipse cx={cx} cy={topY-nR*0.42} rx={nR*1.35} ry={nR*0.82} fill={base} stroke={out} strokeWidth="0.6"/>
-        <ellipse cx={cx} cy={topY-nR*0.42} rx={nR*0.78} ry={nR*0.48} fill={hue} opacity="0.38"/>
+        {[0.3,0.62].map((xf,i)=>(
+          <path key={i} d={`M${tx+tw*xf} ${ty-r*0.06} Q${tx+tw*(xf-0.08)} ${ty-r*0.18} ${tx+tw*xf} ${ty-r*0.28}`} stroke={out} strokeWidth="0.9" fill="none" strokeLinecap="round" opacity="0.2" style={{animation:`bob 3s ease-in-out infinite ${i*0.4}s`}}/>
+        ))}
+        <path d={`M${tx+r*0.02} ${ty} Q${tx} ${ty+th} ${tx+tw/2} ${ty+th} Q${tx+tw} ${ty+th} ${tx+tw-r*0.02} ${ty}Z`} fill={hue} stroke={out} strokeWidth="0.5" opacity="0.92"/>
+        <path d={`M${tx+tw-r*0.02} ${ty+th*0.2} Q${tx+tw+r*0.16} ${ty+th*0.2} ${tx+tw+r*0.16} ${ty+th*0.5} Q${tx+tw+r*0.16} ${ty+th*0.82} ${tx+tw-r*0.02} ${ty+th*0.82}`} fill="none" stroke={out} strokeWidth="0.9"/>
+        <ellipse cx={tx+tw/2} cy={ty+th+r*0.055} rx={tw*0.6} ry={r*0.065} fill={base} stroke={out} strokeWidth="0.5"/>
+        <ellipse cx={tx+tw/2} cy={ty+r*0.04} rx={tw*0.38} ry={r*0.05} fill={hue} opacity="0.5"/>
       </g>
     );
   }
 
   if (theme === 'music') {
-    // Bubble antennae
+    // Eighth musical note
+    const nx=cx+r*0.26, ny=cy+r*0.18, ns=r*0.28;
     return (
       <g opacity={fade}>
-        <line x1={cx-r*0.18} y1={topY+r*0.04} x2={cx-r*0.24} y2={topY-r*0.46} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
-        <circle cx={cx-r*0.24} cy={topY-r*0.50} r={r*0.14} fill={hue} stroke={out} strokeWidth="0.5"/>
-        <line x1={cx+r*0.18} y1={topY+r*0.04} x2={cx+r*0.30} y2={topY-r*0.38} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
-        <circle cx={cx+r*0.30} cy={topY-r*0.42} r={r*0.14} fill={hue} stroke={out} strokeWidth="0.5"/>
+        <ellipse cx={nx} cy={ny+ns*0.9} rx={ns*0.4} ry={ns*0.3} fill={hue} stroke={out} strokeWidth="0.5" transform={`rotate(-18 ${nx} ${ny+ns*0.9})`}/>
+        <line x1={nx+ns*0.34} y1={ny+ns*0.8} x2={nx+ns*0.34} y2={ny} stroke={hue} strokeWidth="1.4" strokeLinecap="round"/>
+        <path d={`M${nx+ns*0.34} ${ny} Q${nx+ns*0.88} ${ny+ns*0.22} ${nx+ns*0.34} ${ny+ns*0.5}`} fill={hue} stroke={out} strokeWidth="0.4"/>
       </g>
     );
   }
 
   if (theme === 'gratitude') {
-    // Heart antennae
-    const hx1=cx-r*0.17, hx2=cx+r*0.17, hy=topY-r*0.52, hs=r*0.14;
+    // Glowing heart cradled in arms
+    const hx=cx+r*0.24, hy=cy+r*0.22, hs=r*0.22;
     return (
-      <g opacity={fade}>
-        <line x1={hx1} y1={topY+r*0.02} x2={hx1} y2={hy+hs} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
-        <path d={`M${hx1} ${hy+hs} C${hx1} ${hy} ${hx1-hs} ${hy} ${hx1-hs} ${hy+hs*0.5} C${hx1-hs} ${hy+hs*1.4} ${hx1} ${hy+hs*1.7} ${hx1} ${hy+hs*1.7} C${hx1} ${hy+hs*1.7} ${hx1+hs} ${hy+hs*1.4} ${hx1+hs} ${hy+hs*0.5} C${hx1+hs} ${hy} ${hx1} ${hy} ${hx1} ${hy+hs}Z`} fill={hue} stroke={out} strokeWidth="0.4"/>
-        <line x1={hx2} y1={topY+r*0.02} x2={hx2} y2={hy+hs} stroke={out} strokeWidth="1.0" strokeLinecap="round"/>
-        <path d={`M${hx2} ${hy+hs} C${hx2} ${hy} ${hx2-hs} ${hy} ${hx2-hs} ${hy+hs*0.5} C${hx2-hs} ${hy+hs*1.4} ${hx2} ${hy+hs*1.7} ${hx2} ${hy+hs*1.7} C${hx2} ${hy+hs*1.7} ${hx2+hs} ${hy+hs*1.4} ${hx2+hs} ${hy+hs*0.5} C${hx2+hs} ${hy} ${hx2} ${hy} ${hx2} ${hy+hs}Z`} fill={hue} stroke={out} strokeWidth="0.4"/>
+      <g opacity={fade} style={{animation:'breathe 3s ease-in-out infinite'}}>
+        <path d={`M${hx} ${hy+hs*0.5} C${hx} ${hy} ${hx-hs} ${hy} ${hx-hs} ${hy+hs*0.4} C${hx-hs} ${hy+hs*1.1} ${hx} ${hy+hs*1.56} ${hx} ${hy+hs*1.56} C${hx} ${hy+hs*1.56} ${hx+hs} ${hy+hs*1.1} ${hx+hs} ${hy+hs*0.4} C${hx+hs} ${hy} ${hx} ${hy} ${hx} ${hy+hs*0.5}Z`} fill={hue} stroke={out} strokeWidth="0.4" opacity="0.92"/>
+        <path d={`M${hx} ${hy+hs*0.5} C${hx} ${hy} ${hx-hs} ${hy} ${hx-hs} ${hy+hs*0.4} C${hx-hs} ${hy+hs*1.1} ${hx} ${hy+hs*1.56} ${hx} ${hy+hs*1.56} C${hx} ${hy+hs*1.56} ${hx+hs} ${hy+hs*1.1} ${hx+hs} ${hy+hs*0.4} C${hx+hs} ${hy} ${hx} ${hy} ${hx} ${hy+hs*0.5}Z`} fill="white" opacity="0.18"/>
       </g>
     );
   }
@@ -516,14 +526,14 @@ function MochiBody({ stage, mood, size=80, hue, withered=false, accessory, theme
       <ellipse cx={cx} cy={botY+6} rx={r*0.75} ry={2.5} fill="#2E3A3A" opacity={withered?0.16:0.10}/>
       <g style={{transformOrigin:`${cx}px ${cy}px`,animation:withered?'bob-slow 6s ease-in-out infinite':'bob 4s ease-in-out infinite',opacity:withered?0.8:1}}>
         {cfg.feet>0&&<g opacity={withered?0.5:0.85}><rect x={cx-feetSpread-footW/2} y={botY-1} width={footW} height={footH} rx={footW/2} fill={shadowColor}/><rect x={cx+feetSpread-footW/2} y={botY-1} width={footW} height={footH} rx={footW/2} fill={shadowColor}/></g>}
-        <ThemeEars theme={theme} cx={cx} topY={topY} r={r} hue={accentColor} withered={withered}/>
         <path d={bodyPath} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.4"/>
         <ellipse cx={cx-r*0.34} cy={cy-r*0.4} rx={r*0.28} ry={r*0.2} fill="white" opacity="0.55"/>
         <circle cx={cx-r*0.5} cy={cy-r*0.55} r={r*0.07} fill="white" opacity="0.75"/>
         {!withered&&stage!=='seed'&&<g opacity="0.5"><ellipse cx={cx-cfg.faceSpread-1.6} cy={faceY+2.6} rx={2} ry={1.1} fill="#F0B8B8"/><ellipse cx={cx+cfg.faceSpread+1.6} cy={faceY+2.6} rx={2} ry={1.1} fill="#F0B8B8"/></g>}
         <FaceDots cx={cx} cy={faceY} mood={withered?'sad':(stage==='seed'?'sleep':cfg.mood)} spread={cfg.faceSpread} size={cfg.faceSize}/>
         <Accessory kind={accessory} cx={cx} cy={cy} r={r} hue={hue||'#8FA77F'} withered={withered}/>
-        {stage!=='seed'&&(()=>{const armW=r*0.13,armH=r*0.30,armY=cy+r*0.35,armX=r*0.85,angle=withered?-8:10;return(<><ellipse cx={cx-armX} cy={armY} rx={armW} ry={armH} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.45" transform={`rotate(${-angle} ${cx-armX} ${armY})`}/><ellipse cx={cx+armX} cy={armY} rx={armW} ry={armH} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.45" transform={`rotate(${angle} ${cx+armX} ${armY})`}/></>);})()} 
+        {stage!=='seed'&&(()=>{const armW=r*0.13,armH=r*0.30,armY=cy+r*0.35,armX=r*0.85,angle=withered?-8:10;return(<><ellipse cx={cx-armX} cy={armY} rx={armW} ry={armH} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.45" transform={`rotate(${-angle} ${cx-armX} ${armY})`}/><ellipse cx={cx+armX} cy={armY} rx={armW} ry={armH} fill={`url(#${gradId})`} stroke={shadowColor} strokeWidth="0.35" strokeOpacity="0.45" transform={`rotate(${angle} ${cx+armX} ${armY})`}/></>);})()}
+        {stage!=='seed'&&<HeldItem theme={theme} cx={cx} cy={cy} r={r} hue={accentColor} withered={withered}/>}
       </g>
       {!withered&&cfg.halo>0.3&&<><circle cx={cx+r*1.0} cy={cy-r*0.8} r="0.8" fill="white" style={{animation:'shimmer 2.5s ease-in-out infinite'}}/><circle cx={cx-r*1.1} cy={cy-r*0.5} r="0.6" fill="white" style={{animation:'shimmer 3s ease-in-out infinite 0.7s'}}/></>}
     </svg>
@@ -707,7 +717,7 @@ const ICON = {
   send:()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>,
 };
 function BottomTabBar({ active, onChange }) {
-  const tabs=[{id:'today',label:'Today',icon:ICON.sun},{id:'garden',label:'Garden',icon:ICON.tree},{id:'insights',label:'Insights',icon:ICON.chart},{id:'coach',label:'Coach',icon:ICON.feather}];
+  const tabs=[{id:'today',label:'Today',icon:ICON.sun},{id:'garden',label:'Overview',icon:ICON.tree},{id:'insights',label:'Insights',icon:ICON.chart},{id:'coach',label:'Coach',icon:ICON.feather}];
   return (
     <div style={{position:'absolute',bottom:0,left:0,right:0,paddingBottom:'calc(22px + var(--safe-bottom, 0px))',paddingTop:8,background:'linear-gradient(180deg,rgba(247,242,229,0),rgba(247,242,229,0.85) 40%,rgba(247,242,229,0.95) 70%)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',zIndex:30}}>
       <div style={{display:'flex',justifyContent:'space-around',padding:'6px 10px'}}>
@@ -848,64 +858,79 @@ function SakuraTree({ size=100 }) {
   );
 }
 function GardenScreen({ habits, onOpenHabit, mood='day' }) {
-  const ascended=habits.filter(h=>h.streak>=30).length;
-  const totalDays=habits.reduce((s,h)=>s+h.streak,0);
-  const skies={dawn:['#F8E6D6','#E8B89C'],day:['#DCEAF1','#B8D4E3'],dusk:['#E8C5C0','#8C7A9E'],night:['#1F2B3E','#3D5275']};
-  const [sk1,sk2]=skies[mood]||skies.day;
-  const grassA=mood==='night'?'#2A3A30':mood==='dusk'?'#5C6B4F':'#7B9C5E';
-  const grassB=mood==='night'?'#3A4D40':mood==='dusk'?'#7E8E68':'#A6C081';
-  const hillA=mood==='night'?'#2D3D54':mood==='dusk'?'#6B5E78':'#9CB594';
-  const hillB=mood==='night'?'#1A2438':mood==='dusk'?'#4E4866':'#6E8868';
-  const isDark=mood==='night';
+  const ascended = habits.filter(h => h.streak >= 30).length;
+  const totalDays = habits.reduce((s,h) => s + h.streak, 0);
+
   return (
-    <div style={{width:'100%',height:'100%',position:'relative',overflow:'hidden',background:'var(--bg)'}}>
-      <div className="scroll-hide" style={{width:'100%',height:'100%',overflow:'auto',paddingBottom:170}}>
-        <div style={{position:'absolute',top:56,left:22,right:22,zIndex:25}}>
-          <div style={{fontFamily:'var(--font-ui)',fontSize:11,fontWeight:600,letterSpacing:1.4,textTransform:'uppercase',color:mood==='night'?'rgba(248,244,230,0.85)':'var(--ink-2)',textShadow:'0 1px 2px rgba(255,255,255,0.5)'}}>Your village · 村</div>
-          <H1 style={{marginTop:4,color:mood==='night'?'#F8F4E6':'var(--ink)',textShadow:'0 2px 6px rgba(255,255,255,0.4)'}}>Where they live</H1>
+    <div style={{width:'100%',height:'100%',background:'var(--bg)'}}>
+      <div className="scroll-hide" style={{width:'100%',height:'100%',overflow:'auto',paddingBottom:140}}>
+
+        {/* Header */}
+        <div style={{padding:'54px 22px 20px'}}>
+          <div style={{fontFamily:'var(--font-ui)',fontSize:11,fontWeight:600,letterSpacing:1.4,textTransform:'uppercase',color:'var(--ink-3)'}}>Your creatures · 概</div>
+          <H1 style={{marginTop:4}}>Mochi overview</H1>
         </div>
-        {/* Panorama */}
-        <div style={{position:'relative',height:320,overflow:'hidden',background:`linear-gradient(180deg,${sk1} 0%,${sk2} 60%)`}}>
-          <div style={{position:'absolute',top:50,right:36,width:54,height:54,borderRadius:'50%',background:isDark?'radial-gradient(circle at 35% 35%,#F4ECDB,#D9C9A0)':'radial-gradient(circle at 35% 35%,#FFFBE8,#F4D89A)',boxShadow:isDark?'0 0 30px rgba(244,236,219,0.5)':'0 0 50px rgba(244,216,154,0.5)',zIndex:1}}/>
-          <svg viewBox="0 0 400 110" preserveAspectRatio="none" style={{position:'absolute',top:110,left:0,width:'100%',height:110,zIndex:2,display:'block'}}>
-            <path d="M 130 100 L 200 36 L 270 100 Z" fill={hillA} opacity="0.85"/>
-            <path d="M 200 36 L 190 50 L 210 50 Z" fill="#F8F4E6" opacity={isDark?0.4:0.85}/>
-            <path d="M0 78 Q 40 60 80 70 T 160 64 T 240 70 T 320 64 T 400 70 L 400 110 L 0 110 Z" fill={hillB} opacity="0.7"/>
-          </svg>
-          {(mood==='day'||mood==='dawn')&&<><Cloud x={-20} y={40} w={110} opacity={0.65}/><Cloud x={240} y={28} w={80} opacity={0.55}/></>}
-          <div style={{position:'absolute',top:130,left:16,zIndex:4}}><SakuraTree size={100}/></div>
-          <div style={{position:'absolute',top:120,right:8,zIndex:4}}><SakuraTree size={120}/></div>
-          {[1,2,3,4,5,6,7,8].map(i=><div key={i} style={{position:'absolute',left:`${(i*47)%100}%`,top:80+(i*23)%140,width:6,height:6,background:'radial-gradient(circle,#F2DDD8,#E8C5C0)',borderRadius:'50% 0',opacity:isDark?0.4:0.7,transform:`rotate(${i*30}deg)`,animation:`petalFall${i%3} ${8+i%3}s linear infinite ${i*0.5}s`}}/>)}
-          <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:`linear-gradient(180deg,${grassA} 0%,${grassB} 100%)`,zIndex:5}}/>
-          {habits.slice(0,5).map((h,i)=>{
-            const positions=[{left:'14%',bottom:16,scale:0.65},{left:'32%',bottom:6,scale:0.85},{left:'54%',bottom:22,scale:0.55},{left:'72%',bottom:10,scale:0.75},{left:'88%',bottom:26,scale:0.5}][i];
-            return <div key={h.id} style={{position:'absolute',left:positions.left,bottom:positions.bottom,transform:`translateX(-50%) scale(${positions.scale})`,transformOrigin:'50% 100%',zIndex:Math.round(100-parseFloat(positions.left)),animation:`bob ${3+i*0.5}s ease-in-out infinite ${i*0.3}s`}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={72} withered={h.withered}/></div>;
-          })}
-          {isDark&&Array.from({length:10}).map((_,i)=><div key={i} style={{position:'absolute',left:`${10+(i*73)%80}%`,top:130+(i*17)%130,width:3,height:3,borderRadius:'50%',background:'#FFEDB4',boxShadow:'0 0 6px #FFEDB4,0 0 14px rgba(255,237,180,0.6)',animation:`shimmer ${1.5+(i%4)*0.4}s ease-in-out infinite ${i*0.2}s`,zIndex:8}}/>)}
-        </div>
-        <div style={{padding:'14px 16px 14px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,position:'relative',zIndex:5}}>
+
+        {/* Stats row */}
+        <div style={{padding:'0 16px 20px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8}}>
           <Card padding={14} style={{textAlign:'center'}}><StatNumber value={habits.length} label="Roaming" size={28}/></Card>
           <Card padding={14} style={{textAlign:'center'}}><StatNumber value={ascended} label="Ascended" size={28} color="var(--ochre-400)"/></Card>
           <Card padding={14} style={{textAlign:'center'}}><StatNumber value={totalDays} label="Days kept" size={28} color="var(--sage-400)"/></Card>
         </div>
-        <div style={{padding:'0 16px'}}>
-          <SectionLabel style={{marginBottom:10,padding:'0 6px'}}>Inhabitants</SectionLabel>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
-            {habits.map(h=>(
-              <div key={h.id} onClick={()=>onOpenHabit(h.id)} style={{borderRadius:'var(--radius-card)',overflow:'hidden',cursor:'pointer',background:`linear-gradient(135deg,${h.hue}1A,${h.hue}06)`,border:'0.5px solid rgba(46,58,58,0.06)',boxShadow:'var(--shadow-soft)',display:'flex',alignItems:'stretch'}}>
-                <div style={{width:150,flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center'}}><HabitSceneMini habit={h} size={148}/></div>
-                <div style={{flex:1,padding:'14px 16px',display:'flex',flexDirection:'column',justifyContent:'center',minWidth:0}}>
-                  <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:500,color:'var(--ink)',letterSpacing:-0.2}}>{h.creatureName}</div>
-                  <div style={{fontSize:12,color:'var(--ink-3)',marginTop:2}}>{h.name}</div>
-                  <div style={{display:'flex',gap:6,marginTop:8,flexWrap:'wrap'}}>
-                    <Chip color={`${h.hue}22`} textColor={h.hue}><span style={{color:h.hue}}>{ICON.flame()}</span>{h.streak}d</Chip>
-                    {h.withered&&<Chip color="rgba(212,156,151,0.18)" textColor="var(--rose-400)">drifting</Chip>}
+
+        {/* Mochi cards */}
+        <div style={{padding:'0 16px',display:'flex',flexDirection:'column',gap:12}}>
+          {habits.length === 0 && (
+            <div style={{textAlign:'center',padding:'48px 0',fontFamily:'var(--font-display)',fontStyle:'italic',color:'var(--ink-4)',fontSize:16}}>
+              No mochi yet. Plant a habit to begin.
+            </div>
+          )}
+          {habits.map(h => {
+            const stage = stageFromStreak(h.streak);
+            const stageLabels = {seed:'Seed',hatchling:'Hatchling',toddler:'Growing',grown:'Grown',ascending:'Ascending',transformed:'✦ Transformed'};
+            const nextMilestone = [3,7,14,30,90,90][['seed','hatchling','toddler','grown','ascending','transformed'].indexOf(stage)];
+            const daysToNext = Math.max(0, nextMilestone - h.streak);
+            const worldLabel = h.worldName || (h.world ? ({spirited:'Spirited Away',howl:"Howl's Castle",totoro:'My Totoro',heron:'The Heron',kiki:"Kiki's Sky"}[h.world] || h.world) : null);
+            return (
+              <div key={h.id} onClick={()=>onOpenHabit(h.id)} style={{borderRadius:20,background:'var(--card)',boxShadow:'var(--shadow-soft)',cursor:'pointer',overflow:'hidden',border:`0.5px solid rgba(46,58,58,0.06)`}}>
+                {/* Top strip with hue */}
+                <div style={{height:4,background:`linear-gradient(90deg,${h.hue},${h.hue}88)`}}/>
+                <div style={{padding:'16px 18px',display:'flex',gap:16,alignItems:'center'}}>
+                  {/* Mochi */}
+                  <div style={{width:72,height:72,borderRadius:18,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={60} withered={h.withered}/>
                   </div>
+                  {/* Info */}
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:2}}>
+                      <div style={{fontFamily:'var(--font-display)',fontSize:19,fontWeight:500,color:'var(--ink)',letterSpacing:-0.2}}>{h.creatureName}</div>
+                      {h.withered && <span style={{fontSize:10,fontWeight:600,color:'var(--rose-400)',letterSpacing:0.5,textTransform:'uppercase',background:'rgba(212,156,151,0.15)',padding:'2px 6px',borderRadius:999}}>drifting</span>}
+                    </div>
+                    <div style={{fontSize:12,color:'var(--ink-3)',marginBottom:8}}>{h.name}{h.frequency==='weekly'?' · weekly':''}{h.days && h.days.length < 7 ? ` · ${h.days.join(' ')}` : ''}</div>
+                    {/* Stage + streak */}
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <span style={{fontSize:11,fontWeight:600,color:h.hue,letterSpacing:0.3}}>{stageLabels[stage]}</span>
+                      <span style={{fontSize:11,color:'var(--ink-4)'}}>·</span>
+                      <span style={{fontSize:11,color:'var(--ink-3)'}}>{h.streak}d streak</span>
+                      {stage !== 'transformed' && daysToNext > 0 && <span style={{fontSize:10,color:'var(--ink-4)',fontStyle:'italic'}}>{daysToNext}d to next stage</span>}
+                    </div>
+                  </div>
+                  {/* Streak number */}
+                  <div style={{fontFamily:'var(--font-display)',fontSize:32,fontWeight:400,color:'var(--ink)',letterSpacing:-1,flexShrink:0}}>{h.streak}</div>
+                </div>
+                {/* Last 14 days bar */}
+                <div style={{padding:'0 18px 14px',display:'flex',gap:3,alignItems:'flex-end',height:28}}>
+                  {h.history.slice(-14).map((d,j) => (
+                    <div key={j} style={{flex:1,height:d?'100%':'35%',background:d?h.hue:'var(--cream-200)',borderRadius:3,opacity:d?0.75:0.5,transition:'height 0.2s'}}/>
+                  ))}
+                  {worldLabel && <div style={{marginLeft:'auto',fontSize:10,color:'var(--ink-4)',fontStyle:'italic',letterSpacing:0.2,whiteSpace:'nowrap',paddingLeft:8}}>{worldLabel}</div>}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
+
+        {/* How they grow — keep but subtle */}
         <div style={{padding:'20px 16px 0'}}>
           <Card padding={16}>
             <div style={{fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:'uppercase',color:'var(--ink-3)',marginBottom:10}}>How they grow</div>
@@ -923,6 +948,7 @@ function GardenScreen({ habits, onOpenHabit, mood='day' }) {
             </div>
           </Card>
         </div>
+
       </div>
     </div>
   );
@@ -951,26 +977,37 @@ function InsightsScreen({ habits, userName='' }) {
     <ScreenContainer>
       <div style={{padding:'54px 22px 0'}}><SectionLabel>The pattern</SectionLabel><H1 style={{marginTop:4,marginBottom:24}}>Insights</H1></div>
 
-      {/* Weekly bar chart */}
+      {/* Weekly overview — completion grid */}
       <div style={{padding:'0 16px 16px'}}>
         <Card padding={20}>
-          <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',marginBottom:14}}>
+          <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',marginBottom:16}}>
             <H2 style={{fontSize:18}}>This week</H2>
-            <span style={{fontSize:13,color:'var(--ink-3)'}}>{weekHistory.reduce((a,b)=>a+b,0)} risings</span>
+            <span style={{fontSize:13,color:'var(--ink-3)'}}>{weekHistory.reduce((a,b)=>a+b,0)} check-ins</span>
           </div>
-          <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',height:120,gap:4}}>
-            {weekHistory.map((v,i)=>{
-              const labels=['M','T','W','T','F','S','S'],isToday=i===6;
-              return (
-                <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:8}}>
-                  <div style={{width:'100%',height:`${(v/Math.max(max,1))*90+8}px`,background:isToday?'linear-gradient(180deg,var(--sage-300),var(--sage-400))':`linear-gradient(180deg,${v>0?'var(--sky-300)':'var(--cream-200)'},${v>0?'var(--sky-400)':'var(--cream-200)'})`,borderRadius:8,opacity:v===0?0.5:1,position:'relative'}}>
-                    {v>0&&<div style={{position:'absolute',top:-22,left:'50%',transform:'translateX(-50%)',fontSize:11,fontWeight:600,color:'var(--ink-2)'}}>{v}</div>}
-                  </div>
-                  <div style={{fontSize:10,fontWeight:600,color:isToday?'var(--ink)':'var(--ink-3)',letterSpacing:0.5}}>{labels[i]}</div>
-                </div>
-              );
-            })}
+          {/* Day labels */}
+          <div style={{display:'grid',gridTemplateColumns:'auto repeat(7,1fr)',gap:4,marginBottom:6}}>
+            <div/>
+            {['M','T','W','T','F','S','S'].map((d,i)=>(
+              <div key={i} style={{textAlign:'center',fontSize:10,fontWeight:600,color:i===6?'var(--ink)':'var(--ink-3)',letterSpacing:0.5}}>{d}</div>
+            ))}
           </div>
+          {/* Habit rows */}
+          {habits.map(h=>(
+            <div key={h.id} style={{display:'grid',gridTemplateColumns:'auto repeat(7,1fr)',gap:4,marginBottom:4,alignItems:'center'}}>
+              <div style={{width:28,height:28,borderRadius:8,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center',marginRight:4}}>
+                <Mochi streak={h.streak} hue={h.hue} theme={h.theme} size={22} withered={h.withered}/>
+              </div>
+              {Array.from({length:7},(_,i)=>{
+                const idx=29-(6-i);
+                const done=h.history[idx];
+                const isToday=i===6;
+                return (
+                  <div key={i} style={{height:28,borderRadius:8,background:done?h.hue:isToday?`${h.hue}22`:'var(--cream-200)',opacity:done?0.8:isToday?1:0.6,border:isToday?`1.5px solid ${h.hue}44`:'none',transition:'background 0.2s'}}/>
+                );
+              })}
+            </div>
+          ))}
+          {habits.length===0&&<div style={{textAlign:'center',padding:'16px 0',color:'var(--ink-4)',fontStyle:'italic',fontSize:14}}>No habits yet.</div>}
         </Card>
       </div>
 
@@ -984,10 +1021,11 @@ function InsightsScreen({ habits, userName='' }) {
           {habits.map((h,i)=>(
             <div key={h.id}>
               <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 16px'}}>
-                <div style={{width:40,height:40,borderRadius:12,flexShrink:0,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center'}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={36} withered={h.withered}/></div>
+                <div style={{width:48,height:48,borderRadius:12,flexShrink:0,background:`${h.hue}1A`,display:'flex',alignItems:'center',justifyContent:'center'}}><Mochi streak={h.streak} hue={h.hue} accessory={h.accessory} theme={h.theme} size={40} withered={h.withered}/></div>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:14.5,fontWeight:500,color:'var(--ink)'}}>{h.creatureName}</div>
                   <div style={{fontSize:11,color:'var(--ink-3)',marginTop:1}}>{h.name}{h.frequency==='weekly'?' · weekly':''}</div>
+                  <div style={{fontSize:10,color:'var(--ink-4)',marginTop:1,fontStyle:'italic'}}>{h.worldName || (h.world && h.world!=='custom' ? {spirited:'Spirited Away',howl:"Howl's Castle",totoro:'My Totoro',heron:'The Heron',kiki:"Kiki's Sky"}[h.world] : '')}</div>
                 </div>
                 <div style={{display:'flex',gap:1.5,alignItems:'flex-end',height:22}}>
                   {h.history.slice(-14).map((d,j)=><div key={j} style={{width:4,height:d?'100%':'30%',background:d?h.hue:'var(--cream-200)',borderRadius:2,opacity:d?0.8:0.7}}/>)}
@@ -1287,7 +1325,7 @@ function DetailScreen({ habit, onBack, onComplete, onRetire, onDelete, mood='day
 // ═══════════════════════════════════════════════════════════════
 function AddHabitScreen({ onClose, onCreate, habitCount=0 }) {
   const [step, setStep] = React.useState(0);
-  const [data, setData] = React.useState({ identity:'', name:'', cue:'', minimum:'', hue:HABIT_HUES.sage, creatureName:'', frequency:'daily' });
+  const [data, setData] = React.useState({ identity:'', name:'', cue:'', minimum:'', hue:HABIT_HUES.sage, creatureName:'', frequency:'daily', days:['Mo','Tu','We','Th','Fr','Sa','Su'], world:'', worldName:'' });
 
   // 5-habit limit guard
   if (habitCount >= 5) return (
@@ -1295,30 +1333,74 @@ function AddHabitScreen({ onClose, onCreate, habitCount=0 }) {
       <Mochi fixedStage="ascending" hue={HABIT_HUES.ochre} size={100}/>
       <div style={{fontFamily:'var(--font-display)',fontSize:26,fontWeight:400,color:'var(--ink)',letterSpacing:-0.4,marginTop:20,marginBottom:8,textAlign:'center'}}>The island is full.</div>
       <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:16,color:'var(--ink-3)',fontWeight:300,lineHeight:1.5,textAlign:'center',marginBottom:32,maxWidth:260}}>Up to 5 mochi can live here at once. Retire or tend an existing one before planting new.</div>
-      <button onClick={onClose} style={{width:'100%',maxWidth:280,height:52,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:'pointer'}}>Back to garden</button>
+      <button onClick={onClose} style={{width:'100%',maxWidth:280,height:52,borderRadius:999,border:0,background:'var(--ink)',color:'var(--cream-50)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:'pointer'}}>Back to overview</button>
     </div>
   );
 
+  const ALL_DAYS = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  const WORLD_OPTIONS = [
+    { id:'spirited', label:'Spirited Away', emoji:'🌊', desc:'The bathhouse sea' },
+    { id:'howl',     label:"Howl's Castle",  emoji:'🏰', desc:'Rolling hills, smoke' },
+    { id:'totoro',   label:'My Totoro',      emoji:'🌳', desc:'Countryside forest' },
+    { id:'heron',    label:'The Heron',      emoji:'🪶', desc:'The tower between worlds' },
+    { id:'kiki',     label:"Kiki's Sky",     emoji:'🧹', desc:'Coastal town, open sky' },
+    { id:'custom',   label:'Your own world', emoji:'✨', desc:'Name it below' },
+  ];
+
   const steps=[
-    {key:'identity',title:'Who are you becoming?',sub:'Habits are votes for the kind of person you want to be.',prompt:'I want to become',placeholder:'a writer / someone who moves gently / well-rested',hint:'Start with the identity, not the outcome.'},
-    {key:'name',title:'What is the tiny practice?',sub:'The smallest action that points toward that identity.',prompt:'Each day I will',placeholder:'write three pages / walk after lunch',hint:'Specific. Repeatable. Boring is fine.'},
-    {key:'frequency',title:'How often?',sub:'Some habits need daily water, others weekly space.',prompt:null,placeholder:null,hint:'Weekly habits count each week you do them at least once.'},
-    {key:'cue',title:'When?',sub:'Anchor it to something that already happens.',prompt:'After',placeholder:'the kettle clicks / I close my laptop',hint:'Habit stacking: tie it to an existing rhythm.'},
-    {key:'minimum',title:'And on the hard days?',sub:"The two-minute version, for when you almost can't.",prompt:'At minimum I will',placeholder:'write one sentence / walk to the corner',hint:'A grain of rice still feeds the bird.'},
-    {key:'creature',title:'Name your mochi',sub:'A small soul will hatch when you keep this for three days.'},
+    {key:'intro',   title:"What's the tiny practice?",   sub:'Start small. Boring is fine.'},
+    {key:'days',    title:'Which days?',                  sub:'Choose the days this practice belongs to.'},
+    {key:'world',   title:"Where does your mochi live?",  sub:'Pick the world where it drifts while you sleep.'},
+    {key:'identity',title:'Who are you becoming?',        sub:'Habits are votes for the kind of person you want to be.',   prompt:'I want to become',  placeholder:'a writer / someone who moves gently'},
+    {key:'cue',     title:'When?',                        sub:'Anchor it to something that already happens.',              prompt:'After',              placeholder:'the kettle clicks / I close my laptop'},
+    {key:'minimum', title:'And on the hard days?',        sub:"The two-minute version, for when you almost can't.",        prompt:'At minimum I will',  placeholder:'write one sentence / walk to the corner'},
+    {key:'creature',title:'Name your mochi',              sub:'A small soul will hatch when you keep this for three days.'},
   ];
   const cur=steps[step];
-  const canNext=cur.key==='creature'?data.creatureName.length>0:cur.key==='frequency'?true:(data[cur.key]||'').length>0;
+
+  const canNext = (() => {
+    if (cur.key==='intro') return data.name.length > 0;
+    if (cur.key==='days') return data.days.length > 0;
+    if (cur.key==='world') return data.world.length > 0 && (data.world !== 'custom' || data.worldName.length > 0);
+    if (cur.key==='creature') return data.creatureName.length > 0;
+    return (data[cur.key]||'').length > 0;
+  })();
+
   const next=()=>{
     if(step<steps.length-1){setStep(step+1);}
     else{
       const theme=inferTheme({name:data.name,identity:data.identity,response:data.name});
-      onCreate({...data,id:'new-'+Date.now(),response:data.name,reward:'becoming '+data.identity,time:'—',streak:0,longest:0,history:Array(30).fill(false),done:false,withered:false,theme:theme.theme,accessory:data.accessory||theme.accessory});
+      onCreate({
+        ...data,
+        id:'new-'+Date.now(),
+        response:data.name,
+        reward:'becoming '+data.identity,
+        time:'—',
+        streak:0,
+        longest:0,
+        history:Array(30).fill(false),
+        done:false,
+        withered:false,
+        theme:theme.theme,
+        accessory:data.accessory||theme.accessory,
+        days:data.days,
+        world:data.world,
+        worldName:data.worldName||data.world,
+      });
     }
   };
+
+  const toggleDay = (day) => {
+    setData(prev => {
+      const inArr = prev.days.includes(day);
+      return {...prev, days: inArr ? prev.days.filter(d=>d!==day) : [...prev.days, day]};
+    });
+  };
+
   const palette=[{hue:HABIT_HUES.sage,name:'Sage'},{hue:HABIT_HUES.sky,name:'Sea'},{hue:HABIT_HUES.rose,name:'Rose'},{hue:HABIT_HUES.ochre,name:'Ochre'},{hue:HABIT_HUES.lavender,name:'Twilight'}];
   const inferred=inferTheme({name:data.name,identity:data.identity,response:data.name});
   const previewHabit={id:'preview',name:data.name||'a small practice',hue:data.hue,streak:3,theme:inferred.theme,accessory:inferred.accessory};
+
   return (
     <div style={{position:'absolute',inset:0,zIndex:60,background:'var(--bg)',display:'flex',flexDirection:'column',animation:'slideUp 0.3s ease-out'}}>
       <div style={{padding:'54px 16px 8px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -1332,23 +1414,64 @@ function AddHabitScreen({ onClose, onCreate, habitCount=0 }) {
       <div className="scroll-hide" style={{flex:1,overflow:'auto',padding:'24px 22px 120px'}}>
         <H1 style={{fontSize:28,marginBottom:8}}>{cur.title}</H1>
         <div style={{fontFamily:'var(--font-display)',fontStyle:'italic',fontSize:16,color:'var(--ink-2)',fontWeight:300,lineHeight:1.4,marginBottom:28}}>{cur.sub}</div>
-        {cur.key==='frequency'?(
-          <div style={{display:'flex',flexDirection:'column',gap:14}}>
-            {[
-              {value:'daily',label:'Daily',icon:'🌊',desc:'Every day — builds the deepest groove.'},
-              {value:'weekly',label:'Weekly',icon:'🌿',desc:'Once a week — for practices that need more space.'}
-            ].map(opt=>(
-              <div key={opt.value} onClick={()=>setData({...data,frequency:opt.value})} style={{borderRadius:'var(--radius-card)',background:'var(--card)',border:`1.5px solid ${data.frequency===opt.value?'var(--accent)':'var(--line-strong)'}`,padding:20,cursor:'pointer',display:'flex',gap:14,alignItems:'center',boxShadow:'var(--shadow-soft)',transition:'border-color 0.2s'}}>
-                <span style={{fontSize:28}}>{opt.icon}</span>
-                <div>
-                  <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:500,color:'var(--ink)',marginBottom:4}}>{opt.label}</div>
-                  <div style={{fontSize:13,color:'var(--ink-3)',lineHeight:1.4}}>{opt.desc}</div>
+
+        {cur.key==='intro' && (
+          <div>
+            <input type="text" autoFocus value={data.name} onChange={e=>setData({...data,name:e.target.value})} onKeyDown={e=>e.key==='Enter'&&canNext&&next()} placeholder="write three pages / walk after lunch" style={{width:'100%',padding:'14px 0',border:0,borderBottom:'1.5px solid var(--ink-3)',background:'transparent',outline:'none',fontFamily:'var(--font-display)',fontSize:24,color:'var(--ink)',fontWeight:400,letterSpacing:-0.3,marginBottom:28}}/>
+            <div style={{display:'flex',flexDirection:'column',gap:14}}>
+              {[
+                {value:'daily',  label:'Daily',  icon:'🌊', desc:'Every day'},
+                {value:'weekly', label:'Weekly', icon:'🌿', desc:'Once a week'},
+              ].map(opt=>(
+                <div key={opt.value} onClick={()=>{
+                  const newDays = opt.value==='daily' ? [...ALL_DAYS] : [];
+                  setData({...data,frequency:opt.value,days:newDays});
+                }} style={{borderRadius:'var(--radius-card)',background:'var(--card)',border:`1.5px solid ${data.frequency===opt.value?'var(--accent)':'var(--line-strong)'}`,padding:20,cursor:'pointer',display:'flex',gap:14,alignItems:'center',boxShadow:'var(--shadow-soft)',transition:'border-color 0.2s'}}>
+                  <span style={{fontSize:28}}>{opt.icon}</span>
+                  <div>
+                    <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:500,color:'var(--ink)',marginBottom:4}}>{opt.label}</div>
+                    <div style={{fontSize:13,color:'var(--ink-3)',lineHeight:1.4}}>{opt.desc}</div>
+                  </div>
+                  {data.frequency===opt.value&&<div style={{marginLeft:'auto',width:20,height:20,borderRadius:999,background:'var(--accent)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><path d="M2 6l3 3 5-5"/></svg></div>}
                 </div>
-                {data.frequency===opt.value&&<div style={{marginLeft:'auto',width:20,height:20,borderRadius:999,background:'var(--accent)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><path d="M2 6l3 3 5-5"/></svg></div>}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        ):cur.key==='creature'?(
+        )}
+
+        {cur.key==='days' && (
+          <div>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
+              {ALL_DAYS.map(day=>{
+                const active = data.days.includes(day);
+                return (
+                  <button key={day} onClick={()=>toggleDay(day)} style={{flex:'1 0 calc(14% - 4px)',minWidth:40,height:44,borderRadius:12,border:0,background:active?'var(--ink)':'var(--card)',color:active?'var(--cream-50)':'var(--ink-2)',fontFamily:'var(--font-ui)',fontSize:13,fontWeight:600,cursor:'pointer',boxShadow:'var(--shadow-soft)',transition:'all 0.2s',border:`1.5px solid ${active?'var(--ink)':'var(--line-strong)'}`}}>{day}</button>
+                );
+              })}
+            </div>
+            <div style={{fontSize:12,color:'var(--ink-4)',fontStyle:'italic',marginTop:8}}>Streak counts only on your chosen days.</div>
+          </div>
+        )}
+
+        {cur.key==='world' && (
+          <div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:16}}>
+              {WORLD_OPTIONS.map(opt=>(
+                <div key={opt.id} onClick={()=>setData({...data,world:opt.id})} style={{borderRadius:18,background:'var(--card)',border:`1.5px solid ${data.world===opt.id?'var(--accent)':'var(--line-strong)'}`,padding:16,cursor:'pointer',boxShadow:'var(--shadow-soft)',transition:'border-color 0.2s',position:'relative'}}>
+                  {data.world===opt.id&&<div style={{position:'absolute',top:8,right:8,width:16,height:16,borderRadius:999,background:'var(--accent)',display:'flex',alignItems:'center',justifyContent:'center'}}><svg width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><path d="M2 6l3 3 5-5"/></svg></div>}
+                  <div style={{fontSize:24,marginBottom:6}}>{opt.emoji}</div>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:14,fontWeight:500,color:'var(--ink)',marginBottom:2}}>{opt.label}</div>
+                  <div style={{fontSize:11,color:'var(--ink-4)',lineHeight:1.3}}>{opt.desc}</div>
+                </div>
+              ))}
+            </div>
+            {data.world==='custom' && (
+              <input type="text" autoFocus value={data.worldName} onChange={e=>setData({...data,worldName:e.target.value})} placeholder="Name your world…" style={{width:'100%',padding:'14px 0',border:0,borderBottom:'1.5px solid var(--ink-3)',background:'transparent',outline:'none',fontFamily:'var(--font-display)',fontSize:20,color:'var(--ink)',letterSpacing:-0.3}}/>
+            )}
+          </div>
+        )}
+
+        {cur.key==='creature' && (
           <div>
             <div style={{borderRadius:24,background:`radial-gradient(circle at 50% 60%,${data.hue}33,transparent 70%),linear-gradient(180deg,var(--sky-100),var(--cream-100))`,marginBottom:14,position:'relative',overflow:'hidden',padding:4}}>
               <HabitScene habit={previewHabit} size={300}/>
@@ -1360,23 +1483,15 @@ function AddHabitScreen({ onClose, onCreate, habitCount=0 }) {
               {palette.map(p=><button key={p.hue} onClick={()=>setData({...data,hue:p.hue})} style={{width:44,height:44,borderRadius:999,border:0,background:p.hue,boxShadow:data.hue===p.hue?`0 0 0 3px var(--bg),0 0 0 5px ${p.hue}`:'0 1px 3px rgba(0,0,0,0.1)',cursor:'pointer',transition:'all 0.2s'}}/>)}
             </div>
           </div>
-        ):(
+        )}
+
+        {(cur.key==='identity'||cur.key==='cue'||cur.key==='minimum') && (
           <>
             <div style={{fontFamily:'var(--font-display)',fontSize:22,color:'var(--ink-3)',marginBottom:8,fontWeight:300}}>{cur.prompt}…</div>
             <input type="text" autoFocus value={data[cur.key]||''} onChange={e=>setData({...data,[cur.key]:e.target.value})} onKeyDown={e=>e.key==='Enter'&&canNext&&next()} placeholder={cur.placeholder} style={{width:'100%',padding:'14px 0',border:0,borderBottom:'1.5px solid var(--ink-3)',background:'transparent',outline:'none',fontFamily:'var(--font-display)',fontSize:24,color:'var(--ink)',fontWeight:400,letterSpacing:-0.3}}/>
-            <div style={{fontSize:12,color:'var(--ink-4)',marginTop:12,fontStyle:'italic'}}>{cur.hint}</div>
-            {step>0&&(
-              <div style={{marginTop:36,padding:16,borderRadius:18,background:'var(--cream-50)'}}>
-                <div style={{fontSize:10,fontWeight:700,color:'var(--ink-3)',letterSpacing:1.2,textTransform:'uppercase',marginBottom:8}}>Your habit so far</div>
-                <div style={{fontFamily:'var(--font-display)',fontSize:15,fontStyle:'italic',color:'var(--ink-2)',lineHeight:1.5}}>
-                  I want to become <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.identity||'—'}</span>.
-                  {step>=2&&<> After <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.cue||'—'}</span>,</>} I will <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.name||'—'}</span>.
-                  {step>=3&&<> At minimum, <span style={{color:'var(--ink)',fontStyle:'normal',fontWeight:500}}>{data.minimum||'—'}</span>.</>}
-                </div>
-              </div>
-            )}
           </>
         )}
+
       </div>
       <div style={{position:'absolute',bottom:0,left:0,right:0,padding:'12px 16px 32px',background:'linear-gradient(180deg,transparent,var(--bg) 30%)'}}>
         <button onClick={next} disabled={!canNext} style={{width:'100%',height:56,borderRadius:999,border:0,background:canNext?'var(--ink)':'var(--cream-200)',color:canNext?'var(--cream-50)':'var(--ink-4)',fontFamily:'var(--font-ui)',fontSize:16,fontWeight:500,cursor:canNext?'pointer':'not-allowed',boxShadow:canNext?'0 8px 24px rgba(46,58,58,0.18)':'none',transition:'all 0.2s'}}>
